@@ -9,7 +9,9 @@ import javax.validation.constraints.Size;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,16 +39,24 @@ public class TodoRestController {
     }
     
     @PostMapping
-    public void create(@RequestBody @Valid CreateTodoCommand command) {
-        log.debug("request command: {}", command);
+    public void create(@RequestBody @Valid WriteTodoCommand command) {
+        log.debug("create todo, command: {}", command);
         
         editor.create(command.getTitle());
     }
+    
+    @PutMapping("/{id}")
+    public void update(@PathVariable("id") Long id, @RequestBody @Valid WriteTodoCommand command) {
+        log.debug("update todo, id: {}, command: {}", id, command);
+        
+        editor.update(id, command.getTitle(), command.isCompleted());
+    }
 
-    static class CreateTodoCommand {
+    static class WriteTodoCommand {
         @NotBlank
         @Size(min = 4, max = 140)
         private String title;
+        private boolean completed;
 
         public String getTitle() {
             return title;
@@ -56,9 +66,17 @@ public class TodoRestController {
             this.title = title;
         }
 
+        public boolean isCompleted() {
+            return completed;
+        }
+
+        public void setCompleted(boolean completed) {
+            this.completed = completed;
+        }
+
         @Override
         public String toString() {
-            return String.format("[title=%s]", title);
+            return String.format("[title=%s, completed=%s]", title, completed);
         }
     }
     
