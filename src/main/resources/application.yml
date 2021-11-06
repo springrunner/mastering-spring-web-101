@@ -1,3 +1,7 @@
+todos:
+  data:
+    initialize: true
+
 site:
   author: SpringRunner
   description: What're your plans today?
