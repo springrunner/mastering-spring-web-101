@@ -1,3 +1,7 @@
+site:
+  author: SpringRunner
+  description: What're your plans today?
+
 logging:
   level:
     org.springframework.web: debug

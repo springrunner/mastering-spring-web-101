@@ -1,10 +1,13 @@
 package todoapp.web.model;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
 /**
  * 사이트(site) 정보 모델
  *
  * @author springrunner.kr@gmail.com
  */
+@ConfigurationProperties("site")
 public class SiteProperties {
 
     private String author = "unknown";
