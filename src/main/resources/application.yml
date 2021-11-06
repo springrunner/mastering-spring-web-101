@@ -8,4 +8,5 @@ site:
 
 logging:
   level:
+    todoapp: debug
     org.springframework.web: debug
