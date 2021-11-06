@@ -8,6 +8,7 @@ import javax.validation.constraints.Size;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,6 +51,13 @@ public class TodoRestController {
         log.debug("update todo, id: {}, command: {}", id, command);
         
         editor.update(id, command.getTitle(), command.isCompleted());
+    }
+    
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id") Long id) {
+        log.debug("delete todo, id: {}", id);
+        
+        editor.delete(id);
     }
 
     static class WriteTodoCommand {
