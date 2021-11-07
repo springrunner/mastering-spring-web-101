@@ -1,9 +1,7 @@
 package todoapp.web;
 
-import java.util.Objects;
+import javax.annotation.security.RolesAllowed;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,11 +12,9 @@ import todoapp.web.model.UserProfile;
 public class UserRestController {
 
     @GetMapping("/api/user/profile")
-    public ResponseEntity<UserProfile> userProfile(UserSession userSession) {
-        if (Objects.nonNull(userSession)) {
-            return ResponseEntity.ok(new UserProfile(userSession.getUser()));
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    @RolesAllowed(UserSession.ROLE_USER)
+    public UserProfile userProfile(UserSession userSession) {
+        return new UserProfile(userSession.getUser());
     }
     
 }
