@@ -1,4 +1,7 @@
 todos:
+  feature:
+    toggles:
+      auth: true
   data:
     initialize: true
 
