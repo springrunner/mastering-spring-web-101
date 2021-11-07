@@ -4,6 +4,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+files/user-profile-picture/
 
 ### STS ###
 .apt_generated
