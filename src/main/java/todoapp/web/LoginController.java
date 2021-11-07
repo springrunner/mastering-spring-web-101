@@ -13,13 +13,16 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import todoapp.core.user.application.UserPasswordVerifier;
 import todoapp.core.user.application.UserRegistration;
+import todoapp.core.user.domain.User;
 import todoapp.core.user.domain.UserEntityNotFoundException;
 import todoapp.core.user.domain.UserPasswordNotMatchedException;
 
 @Controller
+@SessionAttributes("user")
 public class LoginController {
     
     private final UserPasswordVerifier verifier;
@@ -36,21 +39,23 @@ public class LoginController {
         
     }
     
-    @PostMapping("/login")
+    @PostMapping("/login")    
     public String loginProcess(@Valid LoginCommand command, Model model) {
         log.debug("login command: {}", command);
         
+        User user;
         try {
             // 1. 사용자 저장소에 사용자가 있을 경우: 비밀번호 확인 후 로그인 처리
-            verifier.verify(command.getUsername(), command.getPassword());
+            user = verifier.verify(command.getUsername(), command.getPassword());
         } catch (UserEntityNotFoundException error) {
             // 2. 사용자가 없는 경우: 회원가입 처리 후 로그인 처리
-            registration.join(command.getUsername(), command.getPassword());
+            user = registration.join(command.getUsername(), command.getPassword());
         } catch (UserPasswordNotMatchedException error) {
             // 3. 비밀번호가 틀린 경우: login 페이지로 돌려보내고, 오류 메시지 노출
             model.addAttribute("message", error.getMessage());
             return "login";
         }
+        model.addAttribute("user", user);
         
         return "redirect:/todos";
     }
