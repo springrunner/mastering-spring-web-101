@@ -2,6 +2,7 @@ package todoapp.web;
 
 import java.util.Objects;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -23,6 +24,7 @@ import todoapp.core.todos.domain.Todo;
 
 @RestController
 @RequestMapping("/api/todos")
+@RolesAllowed("ROLE_USER")
 public class TodoRestController {
     
     private final TodoFinder finder;

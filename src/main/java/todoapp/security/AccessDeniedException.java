@@ -1,5 +1,8 @@
 package todoapp.security;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 import todoapp.commons.SystemException;
 
 /**
@@ -7,6 +10,7 @@ import todoapp.commons.SystemException;
  *
  * @author springrunner.kr@gmail.com
  */
+@ResponseStatus(HttpStatus.FORBIDDEN)
 public class AccessDeniedException extends SystemException {
 
     private static final long serialVersionUID = 1L;

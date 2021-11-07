@@ -1,5 +1,6 @@
 package todoapp.web;
 
+
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -17,7 +18,6 @@ public class GlobalControllerAdvice {
     @ModelAttribute("site")
     public SiteProperties siteProperties() {
         return siteProperties;
-    }
+    }   
     
-
 }

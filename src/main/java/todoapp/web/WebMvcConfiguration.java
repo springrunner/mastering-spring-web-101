@@ -10,15 +10,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import todoapp.commons.web.error.ReadableErrorAttributes;
+import todoapp.commons.web.servlet.ExecutionTimeHandlerInterceptor;
+import todoapp.commons.web.servlet.LoggingHandlerInterceptor;
 import todoapp.commons.web.view.CommaSeparatedValuesView;
 import todoapp.security.UserSessionRepository;
 import todoapp.security.web.method.UserSessionHandlerMethodArgumentResolver;
+import todoapp.security.web.servlet.RolesVerifyHandlerInterceptor;
 
 /**
  * Spring Web MVC 설정
@@ -60,6 +64,13 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new UserSessionHandlerMethodArgumentResolver(userSessionRepository));
+    }
+    
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LoggingHandlerInterceptor());
+        registry.addInterceptor(new ExecutionTimeHandlerInterceptor());
+        registry.addInterceptor(new RolesVerifyHandlerInterceptor(userSessionRepository));
     }
     
     /*
