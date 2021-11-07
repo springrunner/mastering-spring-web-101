@@ -13,30 +13,35 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
 
 import todoapp.core.user.application.UserPasswordVerifier;
 import todoapp.core.user.application.UserRegistration;
 import todoapp.core.user.domain.User;
 import todoapp.core.user.domain.UserEntityNotFoundException;
 import todoapp.core.user.domain.UserPasswordNotMatchedException;
+import todoapp.security.UserSession;
+import todoapp.security.UserSessionRepository;
 
 @Controller
-@SessionAttributes("user")
 public class LoginController {
     
     private final UserPasswordVerifier verifier;
     private final UserRegistration registration;
+    private final UserSessionRepository userSessionRepository;
     private final Logger log = LoggerFactory.getLogger(getClass());
     
-    public LoginController(UserPasswordVerifier verifier, UserRegistration registration) {
+    public LoginController(UserPasswordVerifier verifier, UserRegistration registration, UserSessionRepository userSessionRepository) {
         this.verifier = Objects.requireNonNull(verifier);
         this.registration = Objects.requireNonNull(registration);
+        this.userSessionRepository = Objects.requireNonNull(userSessionRepository);
     }
 
     @GetMapping("/login")
-    public void loginForm() {
-        
+    public String loginForm() {
+        if (Objects.nonNull(userSessionRepository.get())) {
+            return "redirect:/todos"; 
+        }
+        return "login";
     }
     
     @PostMapping("/login")    
@@ -55,7 +60,7 @@ public class LoginController {
             model.addAttribute("message", error.getMessage());
             return "login";
         }
-        model.addAttribute("user", user);
+        userSessionRepository.set(new UserSession(user));
         
         return "redirect:/todos";
     }
