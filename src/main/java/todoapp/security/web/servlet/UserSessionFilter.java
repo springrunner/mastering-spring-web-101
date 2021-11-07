@@ -2,6 +2,7 @@ package todoapp.security.web.servlet;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.servlet.FilterChain;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import todoapp.security.UserSession;
+import todoapp.security.UserSessionRepository;
 
 /**
  * HttpServletRequest가 로그인 사용자 세션({@link UserSession}을 사용 할 수 있도록 지원하는 필터 구현체
@@ -24,12 +26,21 @@ import todoapp.security.UserSession;
 public class UserSessionFilter extends OncePerRequestFilter {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+    
+    private final UserSessionRepository userSessionRepository;
+    
+    public UserSessionFilter(UserSessionRepository userSessionRepository) {
+        this.userSessionRepository = Objects.requireNonNull(userSessionRepository);
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
     	log.info("process user-session servlet filter.");
     	
-        throw new UnsupportedOperationException("unimplemented feature for UserSessionFilter");
+    	UserSession userSession = userSessionRepository.get();
+        UserSessionRequestWrapper requestWrapper = new UserSessionRequestWrapper(request, userSession);
+
+        filterChain.doFilter(requestWrapper, response);
     }
 
 
@@ -49,12 +60,12 @@ public class UserSessionFilter extends OncePerRequestFilter {
 
         @Override
         public Principal getUserPrincipal() {
-            throw new UnsupportedOperationException("unimplemented feature for UserSessionRequestWrapper");
+            return userSession.orElse(null);
         }
 
         @Override
         public boolean isUserInRole(String role) {
-            throw new UnsupportedOperationException("unimplemented feature for UserSessionRequestWrapper");
+            return userSession.map(us -> us.hasRole(role)).orElse(false);
         }
 
     }

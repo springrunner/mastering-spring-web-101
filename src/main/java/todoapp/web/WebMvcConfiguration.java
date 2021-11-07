@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -21,8 +22,8 @@ import todoapp.commons.web.servlet.ExecutionTimeHandlerInterceptor;
 import todoapp.commons.web.servlet.LoggingHandlerInterceptor;
 import todoapp.commons.web.view.CommaSeparatedValuesView;
 import todoapp.security.UserSessionRepository;
-import todoapp.security.web.method.UserSessionHandlerMethodArgumentResolver;
 import todoapp.security.web.servlet.RolesVerifyHandlerInterceptor;
+import todoapp.security.web.servlet.UserSessionFilter;
 
 /**
  * Spring Web MVC 설정
@@ -63,14 +64,16 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new UserSessionHandlerMethodArgumentResolver(userSessionRepository));
+        // UserSession이 Principal을 구현하게 되어 이 클래스는 작동하지 않는다
+        // 스프링은 PrincipalMethodArgumentResolver를 통해 Principal 객체를 지원하고 있기 때문이다
+        // resolvers.add(new UserSessionHandlerMethodArgumentResolver(userSessionRepository));        
     }
     
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoggingHandlerInterceptor());
         registry.addInterceptor(new ExecutionTimeHandlerInterceptor());
-        registry.addInterceptor(new RolesVerifyHandlerInterceptor(userSessionRepository));
+        registry.addInterceptor(new RolesVerifyHandlerInterceptor());
     }
     
     /*
@@ -84,6 +87,13 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Bean
     public ErrorAttributes errorAttributes(MessageSource messageSource) {
         return new ReadableErrorAttributes(messageSource);
+    }
+    
+    @Bean
+    public FilterRegistrationBean<UserSessionFilter> userSessionFilter() {
+        FilterRegistrationBean<UserSessionFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new UserSessionFilter(userSessionRepository));
+        return registrationBean;
     }
     
     /**

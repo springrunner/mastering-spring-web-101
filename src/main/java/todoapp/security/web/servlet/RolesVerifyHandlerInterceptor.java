@@ -17,8 +17,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import todoapp.security.AccessDeniedException;
 import todoapp.security.UnauthorizedAccessException;
-import todoapp.security.UserSession;
-import todoapp.security.UserSessionRepository;
 import todoapp.security.support.RolesAllowedSupport;
 
 /**
@@ -30,12 +28,6 @@ public class RolesVerifyHandlerInterceptor implements HandlerInterceptor, RolesA
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     
-    private UserSessionRepository sessionRepository;
-
-    public RolesVerifyHandlerInterceptor(UserSessionRepository sessionRepository) {
-        this.sessionRepository = sessionRepository;
-    }
-
     @Override
     public final boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (handler instanceof HandlerMethod) {
@@ -48,14 +40,13 @@ public class RolesVerifyHandlerInterceptor implements HandlerInterceptor, RolesA
                 log.debug("verify roles-allowed: {}", rolesAllowed);
 
                 // 1. 로그인이 되어 있나요?
-                UserSession userSession = sessionRepository.get();
-                if (Objects.isNull(userSession)) {
+                if (Objects.isNull(request.getUserPrincipal())) {
                     throw new UnauthorizedAccessException();
                 }
 
                 // 2. 권한은 적절한가요?
                 Set<String> matchedRoles = Stream.of(rolesAllowed.value())
-                                                 .filter(role -> userSession.hasRole(role))
+                                                 .filter(role -> request.isUserInRole(role))
                                                  .collect(Collectors.toSet());
 
                 log.debug("matched roles: {}", matchedRoles);
