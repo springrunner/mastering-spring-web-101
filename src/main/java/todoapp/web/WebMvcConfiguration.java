@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.error.ErrorAttributes;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
@@ -11,6 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
+import todoapp.commons.web.error.ReadableErrorAttributes;
 import todoapp.commons.web.view.CommaSeparatedValuesView;
 
 /**
@@ -54,6 +58,11 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         return new CommaSeparatedValuesView();
     }
     */
+    
+    @Bean
+    public ErrorAttributes errorAttributes(MessageSource messageSource) {
+        return new ReadableErrorAttributes(messageSource);
+    }
     
     /**
      * 스프링부트가 생성한 ContentNegotiatingViewResolver를 조작할 목적으로 작성된 컴포넌트

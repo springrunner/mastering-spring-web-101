@@ -1,10 +1,17 @@
 package todoapp.commons.web.error;
 
+import java.util.Map;
+import java.util.Objects;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
+import org.springframework.context.MessageSource;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.validation.BindingResult;
@@ -12,11 +19,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * 스프링부트에 기본 구현체인 {@link DefaultErrorAttributes}에 message 속성을 덮어쓰기 할 목적으로 작성한 컴포넌트이다.
@@ -30,8 +32,13 @@ import java.util.Objects;
 public class ReadableErrorAttributes implements ErrorAttributes, HandlerExceptionResolver, Ordered {
 
     private final DefaultErrorAttributes delegate = new DefaultErrorAttributes();
+    private final MessageSource messageSource;
     private final Logger log = LoggerFactory.getLogger(ReadableErrorAttributes.class);
 
+    public ReadableErrorAttributes(MessageSource messageSource) {
+        this.messageSource = Objects.requireNonNull(messageSource);
+    }
+    
     @Override
     public Map<String, Object> getErrorAttributes(WebRequest webRequest, ErrorAttributeOptions options) {
         Map<String, Object> attributes = delegate.getErrorAttributes(webRequest, options);
@@ -40,8 +47,18 @@ public class ReadableErrorAttributes implements ErrorAttributes, HandlerExceptio
         log.debug("errorAttributes: {}, error: {}", attributes, error);
 
         if (Objects.nonNull(error)) {
-            // TODO attributes, error 을 사용해 message 속성을 읽기 좋은 문구로 가공한다.
-            // TODO ex) attributes.put("message", "문구");
+            /*
+            if (error instanceof TodoEntityNotFoundException) {
+                attributes.put("message", "요청한 할 일을 찾을 수 없어요.");   
+            } else if (error instanceof MethodArgumentNotValidException) {
+                attributes.put("message", "입력 값이 없거나 올바르지 않아요.");
+            }
+            */
+            
+            String errorCode = String.format("Exception.%s", error.getClass().getSimpleName());
+            String errorMessage = messageSource.getMessage(errorCode, new Object[0], error.getMessage(), webRequest.getLocale());
+            
+            attributes.put("message", errorMessage);
         }
 
         return attributes;
