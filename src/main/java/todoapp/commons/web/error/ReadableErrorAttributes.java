@@ -1,7 +1,9 @@
 package todoapp.commons.web.error;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +14,7 @@ import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.validation.BindingResult;
@@ -55,10 +58,25 @@ public class ReadableErrorAttributes implements ErrorAttributes, HandlerExceptio
             }
             */
             
-            String errorCode = String.format("Exception.%s", error.getClass().getSimpleName());
-            String errorMessage = messageSource.getMessage(errorCode, new Object[0], error.getMessage(), webRequest.getLocale());
-            
+            String errorMessage = error.getMessage();
+            if (MessageSourceResolvable.class.isAssignableFrom(error.getClass())) {                
+                errorMessage = messageSource.getMessage((MessageSourceResolvable) error, webRequest.getLocale());
+            } else {
+                String errorCode = String.format("Exception.%s", error.getClass().getSimpleName());
+                errorMessage = messageSource.getMessage(errorCode, new Object[0], errorMessage, webRequest.getLocale());
+            }
             attributes.put("message", errorMessage);
+            
+            BindingResult bindingResult = extractBindingResult(error);
+            if (Objects.nonNull(bindingResult)) {
+                List<String> errors = bindingResult
+                        .getAllErrors()
+                        .stream()
+                        .map(oe -> messageSource.getMessage(oe, webRequest.getLocale()))
+                        .collect(Collectors.toList());
+
+                attributes.put("errors", errors);
+            }
         }
 
         return attributes;
