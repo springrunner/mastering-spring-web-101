@@ -1,0 +1,339 @@
+openapi: 3.0.3
+info:
+  title: Todoapp
+  description: Todoapp 웹 애플리케이션의 Web API 명세입니다.
+  version: "1.0.0"
+  contact:
+    email: springrunner.kr@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: todos
+  - name: user
+  - name: extended
+servers:
+  - url: http://localhost:8080
+    description: 로컬 개발 서버
+paths:
+  '/api/todos':
+    get:
+      tags:
+        - todos
+      summary: 할 일(todo) 목록 조회
+      operationId: searchTodo
+      description: 서버에 등록된 모든 할 일 목록을 조회합니다.
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: 할 일 목록이 반환됩니다.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Todo'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    post:
+      tags:
+        - todos
+      summary: 새로운 할 일(todo) 등록
+      operationId: createTodo
+      description: 사용자가 입력한 할 일을 서버에 등록합니다.
+      security:
+        - sessionAuth: []
+      responses:
+        '201':
+          description: 할 일이 등록되었습니다.
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - text
+              properties:
+                text:
+                  type: string
+                  minLength: 4
+                  description: 할 일 내용 (공백 제거 후 최소 4자 이상)
+                completed:
+                  type: boolean
+                  description: 완료 여부
+                  default: false
+        description: 등록할 할 일
+  '/api/todos/{id}':
+    put:
+      tags:
+        - todos
+      summary: 등록된 할 일(todo) 변경
+      operationId: updateTodo
+      description: 서버에 등록된 할 일을 변경합니다.
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: 할 일 ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 할 일이 변경되었습니다.
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - text
+              properties:
+                text:
+                  type: string
+                  minLength: 4
+                  maxLength: 140
+                  description: 할 일 내용 (공백 제거 후 최소 4자 이상)
+                completed:
+                  type: boolean
+                  description: 완료 여부
+        description: 변경할 할 일
+    delete:
+      tags:
+        - todos
+      summary: 등록된 할 일(todo) 삭제
+      operationId: deleteTodo
+      description: 서버에 등록된 할 일을 삭제합니다.
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: 할 일 ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 할 일이 삭제되었습니다.
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  '/api/user/profile':
+    get:
+      tags:
+        - user
+      summary: 사용자 프로필 조회
+      description: 로그인 사용자에 프로필 정보를 조회합니다.
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: 데이터 조회에 성공했습니다.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'                
+  '/api/user/profile-picture':
+    post:
+      tags:
+        - user
+      summary: 프로필 이미지 변경
+      description: 로그인 사용자에 프로필 이미지를 변경합니다.
+      security:
+        - sessionAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                profilePicture:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: 프로필 이미지를 변경했습니다.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  '/api/feature-toggles':
+    get:
+      tags:
+        - extended
+      summary: 애플리케이션 기능 토글 조회
+      description: 확장 기능 활성화 여부를 조회합니다.
+      responses:
+        '200':
+          description: 기능 토글 정보를 받습니다.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureToggles'
+  '/stream/online-users-counter':
+    get:
+      tags: 
+        - extended
+      summary: 접속자 카운터 스트림 접속
+      description: 사이트 접속자 수를 실시간 이벤트로 수신받는 스트림입니다.
+      responses:
+        '200':
+          description: 스트림 접속에 성공했습니다.
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                example: |
+                  data: 1
+                  data: 2
+                  data: 1
+components:
+  securitySchemes:
+    sessionAuth:
+      type: apiKey
+      in: cookie
+      name: JSESSIONID
+      description: 세션 기반 인증
+  responses:
+    BadRequestError:
+      description: 잘못된 요청입니다.
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnauthorizedError:
+      description: 인증되지 않은 접근입니다.
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/Error'
+    ForbiddenError:
+      description: 허가되지 않은 접근입니다.
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFoundError:
+      description: 해당 자원을 찾을 수 없습니다.
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Todo:
+      type: object
+      required:
+        - id
+        - title
+        - completed
+      properties:
+        id:
+          type: string
+          description: 할 일 ID
+          example: '550e8400-e29b-41d4-a716-446655440000'
+        title:
+          type: string
+          description: 할 일
+          example: 'Mastering Spring MVC 워크숍 참여'
+        completed:
+          type: boolean
+          description: 완료 여부
+          example: false
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+          description: 사용자 이름
+        password:
+          type: string
+          description: 비밀번호
+    UserProfile:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: 사용자 이름
+          example: 'Arawn Park'
+        profilePictureUrl:
+          type: string
+          description: 프로필 이미지 URL
+          example: '/user/profile-picture'
+    FeatureToggles:
+      type: object
+      required:
+        - auth
+        - onlineUsersCounter
+      properties:
+        auth:
+          type: boolean
+          description: 사용자 인증 기능 토글
+          example: true
+        onlineUsersCounter:
+          type: boolean
+          description: 접속 사용자수 실시간 추적 기능 토글
+          example: false
+    Error:
+      type: object
+      required:
+        - path
+        - status
+        - message
+        - timestamp
+      properties:
+        path:
+          type: string
+          description: 오류가 발생한 URL 경로(path)
+          example: '/api/todos'
+        status:
+          type: integer
+          description: HTTP 상태 코드
+          example: 400
+        error:
+          type: object
+          description: 오류 발생 이유
+          properties:
+            errors:
+              type: array
+              description: 스프링 BindingResult 내부의 모든 ObjectErrors 객체 목록
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                    description: 오류 발생 필드
+                  message:
+                    type: string
+                    description: 오류 메시지
+        message:
+          type: string
+          description: 오류 내용
+          example: '잘못된 요청입니다'
+        timestamp:
+          type: string
+          format: date-time
+          description: 오류 발생 시간
+          example: '2025-10-04T12:34:56.789Z'
