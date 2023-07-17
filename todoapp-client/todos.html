@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang=en xmlns:th=http://www.thymeleaf.org>
+<head>
+    <meta charset=utf-8>
+    <meta http-equiv=X-UA-Compatible content="IE=edge">
+    <meta name=viewport content="width=device-width,initial-scale=1">
+    <link rel=stylesheet type=text/css href=/assets/css/todomvc-app-css.css>
+    <link rel=stylesheet type=text/css href=/assets/css/todoapp-client.css>
+    <link rel=icon href=/favicon.ico>
+    <title>TodoApp templates for Server-side</title>
+    <link href=/assets/css/chunk-vendors.css rel=preload as=style>
+    <link href=/assets/css/todos.css rel=preload as=style>
+    <link href=/assets/js/chunk-vendors.js rel=preload as=script>
+    <link href=/assets/js/todos.js rel=preload as=script>
+    <link href=/assets/css/chunk-vendors.css rel=stylesheet>
+    <link href=/assets/css/todos.css rel=stylesheet>
+</head>
+<body>
+    <noscript><strong>We're sorry but vue doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript>
+    <section class=todoapp>
+        <div id=app></div>
+    </section>
+    <footer th:if=${site} class=info>
+        <p>Written by <a href=https://github.com/springrunner><span th:text=${site.author} th:remove=tag>SpringRunner</span></a></p>
+        <p th:text=${site.description}>Part of <a href=https://github.com/springrunner/mastering-spring-web-101>TodoApp templates for Server-side</a></p>
+    </footer>
+    <script src=/assets/js/chunk-vendors.js></script>
+    <script src=/assets/js/todos.js></script>
+</body>
+</html>

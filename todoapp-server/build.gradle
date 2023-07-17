@@ -1,0 +1,66 @@
+plugins {
+    id 'org.springframework.boot' version '3.1.1'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.jetbrains.kotlin.jvm' version '1.8.22'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.8.22'
+    id 'org.jetbrains.kotlin.plugin.jpa' version '1.8.22'
+    id 'java'
+}
+
+group = 'dev.springrunner'
+version = '1.0.0'
+
+ext {
+    javaVersion = JavaLanguageVersion.of(17)
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencyManagement {
+    dependencies {
+        dependency('org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.7.2')
+        dependency('org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.2')
+    }
+}
+
+dependencies {
+	implementation('org.springframework.boot:spring-boot-starter-web')
+	implementation('org.springframework.boot:spring-boot-starter-thymeleaf')
+	implementation('org.springframework.boot:spring-boot-starter-validation')
+
+	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+	runtimeOnly('com.h2database:h2')
+	
+    implementation('org.jetbrains.kotlin:kotlin-reflect')
+    implementation('org.jetbrains.kotlin:kotlin-stdlib-jdk8')
+    implementation('org.jetbrains.kotlinx:kotlinx-coroutines-reactive')
+    implementation('org.jetbrains.kotlinx:kotlinx-coroutines-reactor')
+    implementation('com.fasterxml.jackson.module:jackson-module-kotlin')
+
+	developmentOnly("org.springframework.boot:spring-boot-devtools")
+
+	testImplementation('org.springframework.boot:spring-boot-starter-test')
+}
+
+java {
+    toolchain {
+        languageVersion = javaVersion
+    }
+}
+
+test {
+	useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+    kotlinOptions {
+        freeCompilerArgs += '-Xjsr305=strict'
+        jvmTarget = javaVersion.toString()
+    }
+}

@@ -1,0 +1,91 @@
+/* login.html */
+.auth-form {
+  padding: 30px 25px;
+}
+.auth-form label {
+  display: block;
+  padding-left: 2px;
+  margin-bottom: 7px;
+}
+.auth-form .label-link {
+  float: right;
+  font-size: 12px;
+  color: #0366d6;
+  text-decoration: none;
+}
+.auth-form input {
+  display: block;
+  width: 100%;
+  margin-top: 5px;
+  background-color: #fff;
+  background-position: right 8px center;
+  background-repeat: no-repeat;
+  border: 1px solid #d1d5da;
+  border-radius: 3px;
+  color: #24292e;
+  font-size: 14px;
+  line-height: 20px;
+  min-height: 24px;
+  outline: none;
+  padding: 6px 8px;
+}
+.auth-form .form-group {
+  margin-bottom: 15px;
+}
+.auth-form .invalid-feedback {
+  color: #dc3545;
+  font-size: 0.8em;
+  margin-top: .1rem;
+}
+.auth-form .btn {
+  margin-top: 20px;
+  text-align: center;
+}
+.auth-form .btn button {
+  color: inherit;
+  line-height: 20px;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  border-color: rgba(175, 47, 47, 0.2);
+  width: 100%;
+}
+.auth-form .btn button:hover, button:focus {
+  cursor: pointer;
+  font-weight: 400;
+  border-color: rgba(175, 47, 47, 0.35);
+}
+
+.auth-text {
+  text-align: center;
+  font-size: 1.1em;
+}
+.auth-link {
+  color: rgba(175, 47, 47, 0.58);
+}
+
+.error-title {
+  text-align: left;
+  padding-top: 1em;
+  font-size: 10em;
+}
+.error-list {
+  margin: 10px 20px;
+}
+
+/* error.html */
+h1.error-title {
+  position: absolute;
+  top: -120px;
+  width: 100%;
+  font-size: 40px;
+  font-weight: 400;
+  text-align: center;
+  color: rgba(175, 47, 47, 0.15);
+  -webkit-text-rendering: optimizeLegibility;
+  -moz-text-rendering: optimizeLegibility;
+  text-rendering: optimizeLegibility;
+}
+.error-attributes {
+  padding: 10px 10px;
+}

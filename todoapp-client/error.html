@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang=en xmlns:th=http://www.thymeleaf.org>
+<head>
+    <meta charset=utf-8>
+    <meta http-equiv=X-UA-Compatible content="IE=edge">
+    <meta name=viewport content="width=device-width,initial-scale=1">
+    <link rel=stylesheet type=text/css href=/assets/css/todomvc-app-css.css>
+    <link rel=stylesheet type=text/css href=/assets/css/todoapp-client.css>
+    <link rel=icon href=/favicon.ico>
+    <title>TodoApp templates for Server-side</title>
+    <link href=/assets/css/chunk-vendors.css rel=preload as=style>
+    <link href=/assets/js/chunk-vendors.js rel=preload as=script>
+    <link href=/assets/js/error.js rel=preload as=script>
+    <link href=/assets/css/chunk-vendors.css rel=stylesheet>
+</head>
+<body>
+    <section class=todoapp>
+        <header class=header><h1 class=error-title>Oops! Server Error... ;ㅁ;</h1></header>
+        <section class=error-attributes>
+            <ul>
+                <li>path: <span th:text=${path}>path</span></li>
+                <li>status: <span th:text=${status}>999</span></li>
+                <li>error: <span th:text=${error}>error type</span>
+                    <ul th:if="${errors} != null">
+                        <li th:each="error : ${errors}"><span th:text=${error}>error description</span></li>
+                    </ul>
+                </li>
+                <li>message: <span th:text=${message}>error message</span></li>
+                <li>timestamp: <span th:text=${timestamp}>timestamp</span></li>
+            </ul>
+        </section>
+    </section>
+    <footer th:if=${site} class=info>
+        <p>Written by <a href=https://github.com/springrunner><span th:text=${site.author} th:remove=tag>SpringRunner</span></a></p>
+        <p th:text=${site.description}>Part of <a href=https://github.com/springrunner/mastering-spring-web-101>TodoApp templates for Server-side</a></p>
+    </footer>
+    <script src=/assets/js/chunk-vendors.js></script>
+    <script src=/assets/js/error.js></script>
+</body>
+</html>
