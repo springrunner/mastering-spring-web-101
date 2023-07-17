@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="/assets/css/todomvc-app-css.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/css/todoapp-client.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/css/chunk-vendors.css"/>
+    <link rel="icon" href="/favicon.ico"/>
+    <title>TodoApp templates for Server-side</title>
+    <style type="text/css">
+        * {
+            box-sizing: border-box;
+        }
+    </style>   
+</head>
+<body>
+    <section class="todoapp">
+        <header class="header"><h1>todos</h1></header>
+        <section class="auth-form">
+            <form method="POST" class="auth-form-body">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" tabindex="1" autocapitalize="off" autocorrect="off" autofocus="autofocus" required="required"/>                    
+                    <div th:if="${bindingResult != null && bindingResult.hasFieldErrors('username')}" class="invalid-feedback">
+                        <span th:text="${@messageSource.getMessage(bindingResult.getFieldError('username'), #ctx.locale)}">Please provide a valid username</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" tabindex="2" minlength="8" required="required"/>
+                    <div th:if="${bindingResult != null && bindingResult.hasFieldErrors('password')}" class="invalid-feedback">
+                        <span th:text="${@messageSource.getMessage(bindingResult.getFieldError('password'), #ctx.locale)}">Please provide a valid password</span>
+                    </div>
+                </div>
+                <div class="btn">
+                    <button type="submit" tabindex="3" data-disable-with="login…">Login</button>
+                </div>
+            </form>
+            <p th:if="${message == null}" class="auth-text">unregistered users are automatically joined.</p>
+            <p th:if="${message != null}" th:text="${message}" class="auth-text">Server Message</p></section>
+    </section>
+    <footer th:if="${site}" class="info">
+        <p>Written by <a href="https://github.com/springrunner"><span th:text="${site.author}" th:remove="tag">SpringRunner</span></a></p>
+        <p th:text="${site.description}">Part of <a href="https://github.com/springrunner/mastering-spring-web-101">TodoApp templates for Server-side</a></p>
+    </footer>
+    <script type="text/javascript" src="/assets/js/chunk-vendors.js"></script>
+    <script type="text/javascript" src="/assets/js/login.js"></script>
+</body>
+</html>
