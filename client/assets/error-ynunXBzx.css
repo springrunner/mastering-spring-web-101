@@ -1,0 +1,19 @@
+@charset 'utf-8';
+
+.error-container {
+  padding: 10px 10px;
+  text-align: center;
+}
+
+.error-container h4 {
+  margin-bottom: 0;
+}
+
+.error-container p {
+  margin-bottom: 0;
+}
+
+.error-attributes {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
