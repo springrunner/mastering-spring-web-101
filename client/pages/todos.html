@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Todoapp</title>
+  <link href="/src/ui/todos/app.css" rel="stylesheet" />
+</head>
+<body>
+  <section class="todoapp">
+    <header class="header">
+      <h1>todos</h1>
+      <input class="new-todo" placeholder="What needs to be done?" autofocus="">
+    </header>
+    <main class="main">
+      <div class="toggle-all-container">
+        <input class="toggle-all" type="checkbox">
+        <label class="toggle-all-label" for="toggle-all">Mark all as complete</label>
+      </div>
+      <ul class="todo-list">
+        <li data-id="2" class="">
+          <div class="view">
+            <input class="toggle" type="checkbox">
+            <label>Task Two</label>
+            <button class="destroy"></button>
+          </div>
+        </li>
+        <li data-id="1" class="completed">
+          <div class="view">
+            <input class="toggle" type="checkbox" checked>
+            <label>Task One</label>
+            <button class="destroy"></button>
+          </div>
+        </li>
+      </ul>
+    </main>
+    <footer class="footer">
+      <span class="todo-count"><strong>1</strong> item left</span>
+      <ul class="filters">
+        <li><a href="#/" class="selected">All</a></li>
+        <li><a href="#/active">Active</a></li>
+        <li><a href="#/completed">Completed</a></li>
+      </ul>
+      <button class="clear-completed" style="display: none;">Clear completed</button>
+    </footer>
+  </section>
+  <footer th:if="${site}" class="info">
+    <p>Created by <a href="https://github.com/springrunner"><span th:text="${site.author}" th:remove="tag">the SpringRunner Team</span></a></p>
+    <p th:text="${site.description}">Part of <a href="https://github.com/springrunner/mastering-spring-web-101">Mastering Spring Web 101 Workshop</a></p>
+  </footer>
+  <script type="module" src="/src/ui/todos/app.js"></script>
+</body>
+</html>
