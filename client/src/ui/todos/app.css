@@ -2,3 +2,85 @@
 
 @import url('todomvc-app-css/index.css');
 @import url('todomvc-common/base.css');
+
+#snackbar {
+  visibility: hidden;
+  min-width: 480px;
+  min-height: 30px;
+  max-width: 90vw;
+  background-color: #C44B4B;
+  color: #fff;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  top: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-wrap: break-word;
+}
+
+#snackbar.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+  from { top: 0; opacity: 0; }
+  to { top: 35px; opacity: 1; }
+}
+
+@keyframes fadein {
+  from { top: 0; opacity: 0; }
+  to { top: 35px; opacity: 1; }
+}
+
+@-webkit-keyframes fadeout {
+  from { top: 35px; opacity: 1; }
+  to { top: 0; opacity: 0; }
+}
+
+@keyframes fadeout {
+  from { top: 35px; opacity: 1; }
+  to { top: 0; opacity: 0; }
+}
+
+.footer {
+  height: 52px;
+}
+
+.footer>div:last-child {
+  margin-top: 26px;
+  border-top: 1px dotted #f1f1f1;
+}
+
+.download-todos:hover {
+  text-decoration: underline;
+}
+
+.download-todos, html .download-todos:active {
+  margin-top: 6px;
+  float: right;
+  position: relative;
+  line-height: 19px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+@media (max-width: 430px) {
+  .footer {
+    height: 84px;
+  }
+
+  .footer>div:last-child {
+    margin-top: 24px;
+  }
+
+  .filters {
+    bottom: 10px;
+  }
+}

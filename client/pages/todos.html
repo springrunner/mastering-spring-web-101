@@ -8,9 +8,10 @@
   <link href="/src/ui/todos/app.css" rel="stylesheet" />
 </head>
 <body>
+  <div id="snackbar"></div>
   <section class="todoapp">
     <header class="header">
-      <h1>todos</h1>
+      <h1>todos</h1>       
       <input class="new-todo" placeholder="What needs to be done?" autofocus="">
     </header>
     <main class="main">
@@ -36,13 +37,18 @@
       </ul>
     </main>
     <footer class="footer">
-      <span class="todo-count"><strong>1</strong> item left</span>
-      <ul class="filters">
-        <li><a href="#/" class="selected">All</a></li>
-        <li><a href="#/active">Active</a></li>
-        <li><a href="#/completed">Completed</a></li>
-      </ul>
-      <button class="clear-completed" style="display: none;">Clear completed</button>
+      <div>
+        <span class="todo-count"><strong>1</strong> item left</span>
+        <ul class="filters">
+          <li><a href="#/" class="selected">All</a></li>
+          <li><a href="#/active">Active</a></li>
+          <li><a href="#/completed">Completed</a></li>
+        </ul>
+        <button class="clear-completed" style="display: none;">Clear completed</button>
+      </div>
+      <div>
+        <button class="download-todos">Download todos</button>
+      </div>
     </footer>
   </section>
   <footer th:if="${site}" class="info">
