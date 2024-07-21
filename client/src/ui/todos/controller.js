@@ -62,6 +62,8 @@ export default class TodosController {
   }
 
   bindUserSessionViewCallbacks(userSessionView) {
+    const onError = userSessionView.onError.bind(userSessionView);
+
     userSessionView.onLogin = () => {
       if (!this.props.loginUrl) {
         userSessionView.onError('Login is not supported');
@@ -70,6 +72,10 @@ export default class TodosController {
       }
 
       document.location.href = this.props.loginUrl;
+    };
+
+    userSessionView.onUpdateProfilePicture = (profilePicture) => {
+      this.userSession.updateProfilePicture(profilePicture).catch(onError);
     };
 
     userSessionView.onLogout = () => {

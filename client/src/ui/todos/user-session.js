@@ -27,6 +27,13 @@ class UserSession {
     this.notify();
   }
 
+  async updateProfilePicture(profilePicture) {
+    this.props = {
+      userProfile: await this.userProfileService.updateProfilePicture(profilePicture)
+    }
+    this.notify();
+  }
+
   async logout() {
     this.props = {
       userProfile: await this.userProfileService.clear()
@@ -45,10 +52,12 @@ class UserSessionView {
     this.userProfile = document.querySelector('.user-profile');
     this.username = document.querySelector('.user-profile strong');
     this.userProfilePicture = document.querySelector('.user-profile img');    
+    this.updateProfilePictureLink = document.querySelector('.update-profile-picture-link');
     this.logoutLink = document.querySelector('.logout-link');
 
     this.onLogin = null;
-    this.onLogout = null;
+    this.onUpdateProfilePicture = null;
+    this.onLogout = null;    
 
     this.attachEventListeners();
   }
@@ -62,6 +71,29 @@ class UserSessionView {
 
       this.onLogin();
     });
+
+    this.updateProfilePictureLink.addEventListener('click', event => {
+      if (!this.onUpdateProfilePicture) {
+        console.warn('Warning: onUpdateProfilePicture handler is not defined');
+        return;
+      }
+
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = 'image/*';
+      fileInput.style.display = 'none';
+
+      document.body.appendChild(fileInput);
+      fileInput.click();
+
+      fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            this.onUpdateProfilePicture(file);
+        }
+        document.body.removeChild(fileInput);
+      });
+    });    
 
     this.logoutLink.addEventListener('click', event => {
       if (!this.onLogout) {
