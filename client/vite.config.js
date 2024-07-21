@@ -10,6 +10,7 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         todos: resolve(__dirname, 'pages/todos.html'),
         login: resolve(__dirname, 'pages/login.html'),
+        error: resolve(__dirname, 'pages/error.html'),
       },
     }
   },
