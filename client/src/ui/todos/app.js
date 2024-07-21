@@ -4,6 +4,8 @@ import { UserSession, UserSessionView  } from './user-session.js';
 import { Todos, TodosView } from './todos.js';
 import TodosController from './controller.js';
 
+const isDevelopmentMode = import.meta.env.MODE === 'development'
+
 const userSessionView = new UserSessionView();
 const todosView = new TodosView();
 
@@ -13,6 +15,11 @@ userSession.subscribe(userSessionView);
 const todos = new Todos(LocalStorageTodosService(localStorage));
 todos.subscribe(todosView);
 
-const todosControler = new TodosController(null, userSession, todos);
+const todosControler = new TodosController(
+  {
+    loginUrl: isDevelopmentMode ? '/pages/login.html' : '/login',
+    logoutUrl: isDevelopmentMode ? null : '/logout',
+    logoutSuccessUrl: isDevelopmentMode ? '/pages/login.html' : null,
+  }, userSession, todos);
 todosControler.bindTodosViewCallbacks(todosView);
 todosControler.bindUserSessionViewCallbacks(userSessionView);
