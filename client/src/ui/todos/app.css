@@ -49,6 +49,84 @@
   to { top: 0; opacity: 0; }
 }
 
+.user-session-container {
+  display: none;
+  padding: 6px 8px;
+  background: rgba(0, 0, 0, 0.003);
+  -webkit-box-shadow: 0 2px 1px 0 rgba(0, 0, 0, 0.03);
+  box-shadow: 0 2px 1px 0 rgba(0, 0, 0, 0.03);
+  border-bottom: 1px solid #e6e6e6;
+  position: relative;
+}
+
+.login-guide {
+  text-align: center;
+  font-size: 1.1em;
+}
+
+.login-guide a {
+  color: rgba(175, 47, 47, 0.58);
+}
+
+.user-profile p {
+  font-size: 1.1em;
+  margin-left: 55px;
+}
+
+.user-profile img {
+  position: absolute;
+  margin-top: -10px;
+  margin-left: 5px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center right;
+}
+
+.user-profile .settings {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding-top: 3px;
+  padding-right: 8px;
+}
+
+.user-profile .settings button {
+  border: none;
+  cursor: pointer;
+}
+
+.user-profile .settings .buttons {
+  display: none;
+  position: absolute;
+  right: 0;
+  margin-right: 6px;
+  padding: 4px 4px;
+  min-width: 150px;
+  background-color: #ffffff;
+  border: 1px solid #e6e6e6;
+  text-align: right;
+  z-index: 1;
+}
+
+.user-profile .settings:hover .buttons {
+  display: block;
+}
+
+.user-profile .settings .buttons a {
+  color: #4d4d4d;
+  font-size: 0.9em;
+  line-height: 18px;
+  text-decoration: none;
+  display: block;
+  padding: 2px 4px;
+}
+
+.user-profile .settings .buttons a:hover {
+  font-weight: 400;
+}
+
 .footer {
   height: 52px;
 }

@@ -1,5 +1,7 @@
 export default class TodosController {
-  constructor(todos) {
+  constructor(props, userSession, todos) {
+    this.props = props || {};
+    this.userSession = userSession;
     this.todos = todos;
   }
 
@@ -57,5 +59,32 @@ export default class TodosController {
       onChangedTodos([]);
       onError(error);
     });
+  }
+
+  bindUserSessionViewCallbacks(userSessionView) {
+    userSessionView.onLogin = () => {
+      if (!this.props.loginUrl) {
+        userSessionView.onError('Login is not supported');
+        console.warn('Warning: login-url is not defined');
+        return;
+      }
+
+      document.location.href = this.props.loginUrl;
+    };
+
+    userSessionView.onLogout = () => {
+      if (this.props.logoutUrl) {
+        document.location.href = this.props.logoutUrl;
+      } else {
+        this.userSession.logout().then(() => {
+          if (!this.props.logoutSuccessUrl) {          
+            console.warn('Warning: logout-success-url is not defined');
+            return;
+          }
+          
+          document.location.href = this.props.logoutSuccessUrl;
+        });
+      }
+    };
   }
 };

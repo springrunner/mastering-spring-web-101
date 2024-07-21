@@ -11,7 +11,20 @@
   <div id="snackbar"></div>
   <section class="todoapp">
     <header class="header">
-      <h1>todos</h1>       
+      <h1>todos</h1>
+      <div class="user-session-container">
+        <p class="login-guide">Please <a href="#/login">login</a> to write todos</p>
+        <div class="user-profile">
+          <img src="/profile-picture.png" />
+          <p>Welcome your visit to <strong>Guest</strong></p>
+          <div class="settings">
+            <button type="button">&#9776;</button>
+            <div class="buttons">                            
+              <a href="#/logout" class="logout-link">Logout</a>
+            </div>
+          </div>
+        </div>
+      </div>      
       <input class="new-todo" placeholder="What needs to be done?" autofocus="">
     </header>
     <main class="main">
