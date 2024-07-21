@@ -1,16 +1,21 @@
-import { LocalStorageUserProfileService } from '../../application/user-service.js';
+import { LocalStorageUserProfileService, RandomUserCountService } from '../../application/user-service.js';
 import { LocalStorageTodosService } from '../../application/todo-service.js';
-import { UserSession, UserSessionView  } from './user-session.js'; 
+import { UserSession, UserSessionView  } from './user-session.js';
+import { UserCount, UserCountView } from './user-count.js';
 import { Todos, TodosView } from './todos.js';
 import TodosController from './controller.js';
 
 const isDevelopmentMode = import.meta.env.MODE === 'development'
 
 const userSessionView = new UserSessionView();
+const userCountView = new UserCountView();
 const todosView = new TodosView();
 
 const userSession = new UserSession(LocalStorageUserProfileService(localStorage));
 userSession.subscribe(userSessionView);
+
+const userCount = new UserCount(RandomUserCountService());
+userCount.subscribe(userCountView);
 
 const todos = new Todos(LocalStorageTodosService(localStorage));
 todos.subscribe(todosView);

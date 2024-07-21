@@ -24,4 +24,20 @@ const LocalStorageUserProfileService = (localStorage) => {
   };
 }
 
-export { LocalStorageUserProfileService };
+const RandomUserCountService = (interval = 30000) => {
+  let intervalId;
+
+  return {
+    connect(onUserCountChange) {    
+      intervalId = setInterval(() => {
+        const number = Math.floor(Math.random() * 10) + 1;
+        onUserCountChange(number);
+      }, interval);      
+    },
+    disconnect() {
+      clearInterval(intervalId);
+    }
+  }
+}
+
+export { LocalStorageUserProfileService, RandomUserCountService };
