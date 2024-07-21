@@ -5,6 +5,9 @@ import { UserCount, UserCountView } from './user-count.js';
 import { Todos, TodosView } from './todos.js';
 import TodosController from './controller.js';
 
+import { FeatureToggles } from '../feature-toggles.js';
+import { QueryStringFeatureTogglesService } from '../../application/feature-toggles-service.js';
+
 const isDevelopmentMode = import.meta.env.MODE === 'development'
 
 const userSessionView = new UserSessionView();
@@ -19,6 +22,11 @@ userCount.subscribe(userCountView);
 
 const todos = new Todos(LocalStorageTodosService(localStorage));
 todos.subscribe(todosView);
+
+const featureToggles = new FeatureToggles(QueryStringFeatureTogglesService());
+featureToggles.subscribe(userSessionView);
+featureToggles.subscribe(userCountView);
+featureToggles.notify();
 
 const todosControler = new TodosController(
   {

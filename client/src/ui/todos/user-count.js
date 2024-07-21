@@ -26,6 +26,10 @@ class UserCountView {
     this.userCount = document.querySelector('.user-count strong');
   }
 
+  onChangedFeatureToggles(featureToggles) {
+    this.userCountContainer.style.display = featureToggles.onlineUsersCounter ? 'block' : 'none';
+  }
+
   onChangedUserCount(count) {
     this.userCount.textContent = count;
   }

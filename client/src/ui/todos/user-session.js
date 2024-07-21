@@ -105,6 +105,10 @@ class UserSessionView {
     });
   }
 
+  onChangedFeatureToggles(featureToggles) {
+    this.userSessionContainer.style.display = featureToggles.auth ? 'block' : 'none';
+  }
+
   onChangedUserSession(userSession) {
     this.userSessionContainer.style.display = 'block';
 
