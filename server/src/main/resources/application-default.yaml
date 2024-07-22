@@ -4,3 +4,5 @@ spring:
       static-locations:
         - classpath:/static/
         - file:./../client/dist/
+  thymeleaf:
+    prefix: file:./../client/dist/pages/
