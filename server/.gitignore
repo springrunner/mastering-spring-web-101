@@ -1,3 +1,7 @@
+### Profile ###
+files/
+
+### Gradle ###
 .gradle
 build/
 
