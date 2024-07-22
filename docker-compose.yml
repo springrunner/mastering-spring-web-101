@@ -1,0 +1,27 @@
+services:
+  todoapp:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - h2database
+    deploy:
+      replicas: 1
+    env_file:
+      - .env
+    networks:
+      - springrunner
+    ports:
+      - "50080:8080"
+  h2database:
+    image: oscarfonts/h2:latest
+    environment:
+      H2_OPTIONS: -ifNotExists
+    networks:
+      - springrunner
+    ports:
+      - "50081:81"
+    volumes:
+      - ./.docker/h2database:/opt/h2-data    
+networks:
+  springrunner:
