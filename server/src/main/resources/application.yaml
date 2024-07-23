@@ -12,3 +12,4 @@ spring:
 logging:
   level:
     web: debug
+    '[todoapp]': debug
