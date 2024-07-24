@@ -13,15 +13,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import todoapp.core.todo.TodoFixture;
 import todoapp.core.todo.application.TodoFind;
+import todoapp.core.todo.application.TodoModification;
 import todoapp.core.todo.application.TodoRegistry;
 import todoapp.core.todo.converter.json.TodoModule;
+import todoapp.core.todo.domain.TodoId;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -36,6 +38,9 @@ class TodoRestControllerTest {
     @Mock
     private TodoRegistry todoRegistry;
 
+    @Mock
+    private TodoModification todoModification;
+
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -44,7 +49,7 @@ class TodoRestControllerTest {
                 .modules(new TodoModule(), new JavaTimeModule())
                 .build();
 
-        mockMvc = MockMvcBuilders.standaloneSetup(new TodoRestController(todoFind, todoRegistry))
+        mockMvc = MockMvcBuilders.standaloneSetup(new TodoRestController(todoFind, todoRegistry, todoModification))
                 .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper))
                 .build();
     }
@@ -86,6 +91,33 @@ class TodoRestControllerTest {
 
         mockMvc.perform(
                 post("/api/todos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidTodoJson)
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void update_ShouldModifyTodo() throws Exception {
+        var todoId = TodoId.of(UUID.randomUUID().toString());
+        var todoText = "Updated Task";
+        var todoJson = "{\"text\":\"" + todoText + "\", \"completed\":true}";
+
+        mockMvc.perform(
+                put("/api/todos/" + todoId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(todoJson)
+        ).andExpect(status().isOk());
+
+        verify(todoModification).modify(todoId, todoText, true);
+    }
+
+    @Test
+    void update_ShouldReturnBadRequest_WhenTitleIsInvalid() throws Exception {
+        var todoId = TodoId.of(UUID.randomUUID().toString());
+        var invalidTodoJson = "{\"text\":\"abc\", \"completed\":true}";
+
+        mockMvc.perform(
+                put("/api/todos/" + todoId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(invalidTodoJson)
         ).andExpect(status().isBadRequest());
