@@ -12,6 +12,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import todoapp.core.todo.TodoFixture;
+import todoapp.core.todo.application.TodoCleanup;
 import todoapp.core.todo.application.TodoFind;
 import todoapp.core.todo.application.TodoModification;
 import todoapp.core.todo.application.TodoRegistry;
@@ -41,6 +42,9 @@ class TodoRestControllerTest {
     @Mock
     private TodoModification todoModification;
 
+    @Mock
+    private TodoCleanup todoCleanup;
+
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -49,7 +53,7 @@ class TodoRestControllerTest {
                 .modules(new TodoModule(), new JavaTimeModule())
                 .build();
 
-        mockMvc = MockMvcBuilders.standaloneSetup(new TodoRestController(todoFind, todoRegistry, todoModification))
+        mockMvc = MockMvcBuilders.standaloneSetup(new TodoRestController(todoFind, todoRegistry, todoModification, todoCleanup))
                 .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper))
                 .build();
     }
@@ -121,6 +125,17 @@ class TodoRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(invalidTodoJson)
         ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void delete_ShouldClearTodo() throws Exception {
+        var todoId = TodoId.of(UUID.randomUUID().toString());
+
+        mockMvc.perform(
+                delete("/api/todos/" + todoId)
+        ).andExpect(status().isOk());
+
+        verify(todoCleanup).clear(todoId);
     }
 
 }
