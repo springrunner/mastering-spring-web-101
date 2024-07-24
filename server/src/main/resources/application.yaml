@@ -8,7 +8,13 @@ todoapp:
 spring:
   application:
     name: todos
-  
+
+server:
+  servlet:
+    encoding:
+      charset: utf-8
+      force: true
+
 logging:
   level:
     web: debug
