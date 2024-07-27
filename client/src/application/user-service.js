@@ -40,4 +40,33 @@ const RandomUserCountService = (interval = 30000) => {
   }
 }
 
-export { LocalStorageUserProfileService, RandomUserCountService };
+const OnlineUserCountService = (streamUrl = '/stream/online-users-counter') => {
+  let eventSource;
+  let isConnected = false;
+
+  return {
+    connect(onUserCountChange) {
+      if (isConnected) {
+        console.warn('Already connected to the event source.');
+        return;
+      }
+
+      eventSource = new EventSource(streamUrl);
+      eventSource.onerror = () => {};
+      eventSource.addEventListener('message', (event) => {        
+        onUserCountChange(parseInt(event.data, 10));
+      });
+
+      isConnected = true;
+    },
+    disconnect() {
+      if (eventSource) {
+        eventSource.close();        
+        eventSource = null;
+        isConnected = false;
+      }
+    }
+  }
+}
+
+export { LocalStorageUserProfileService, RandomUserCountService, OnlineUserCountService };

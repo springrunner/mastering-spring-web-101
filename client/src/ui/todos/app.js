@@ -1,4 +1,4 @@
-import { LocalStorageUserProfileService, RandomUserCountService } from '../../application/user-service.js';
+import { LocalStorageUserProfileService, RandomUserCountService, OnlineUserCountService } from '../../application/user-service.js';
 import { LocalStorageTodosService, WebAPITodosService } from '../../application/todo-service.js';
 import { UserSession, UserSessionView  } from './user-session.js';
 import { UserCount, UserCountView } from './user-count.js';
@@ -17,7 +17,7 @@ const todosView = new TodosView();
 const userSession = new UserSession(LocalStorageUserProfileService(localStorage));
 userSession.subscribe(userSessionView);
 
-const userCount = new UserCount(RandomUserCountService());
+const userCount = new UserCount(isDevelopmentMode ? RandomUserCountService() : OnlineUserCountService());
 userCount.subscribe(userCountView);
 
 const todos = new Todos(isDevelopmentMode ? LocalStorageTodosService(localStorage) : WebAPITodosService());
