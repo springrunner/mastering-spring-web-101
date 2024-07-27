@@ -16,7 +16,6 @@ import todoapp.commons.web.view.CommaSeparatedValuesView;
 import todoapp.core.todo.TodoFixture;
 import todoapp.core.todo.application.TodoFind;
 import todoapp.web.convert.TodoToSpreadsheetConverter;
-import todoapp.web.model.SiteProperties;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,7 +48,7 @@ class TodoControllerTest {
         characterEncodingFilter.setForceEncoding(true);
 
         mockMvc = MockMvcBuilders
-                .standaloneSetup(new TodoController(todoFind, new SiteProperties(null, null)))
+                .standaloneSetup(new TodoController(todoFind))
                 .setViewResolvers(contentNegotiatingViewResolver)
                 .addFilter(characterEncodingFilter)
                 .build();

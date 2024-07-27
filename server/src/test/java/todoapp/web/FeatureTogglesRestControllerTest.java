@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import todoapp.web.model.FeatureTogglesProperties;
+import todoapp.web.model.SiteProperties;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -20,6 +21,9 @@ class FeatureTogglesRestControllerTest {
 
     @MockBean
     private FeatureTogglesProperties featureTogglesProperties;
+
+    @MockBean
+    private SiteProperties siteProperties;
 
     @Test
     void featureToggles() throws Exception {
