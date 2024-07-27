@@ -44,6 +44,11 @@ export default class TodosController {
     };
 
     todosView.onDownloadTodos = (outputStream) => {
+      if (this.props.downloadUrl) {
+        outputStream(this.props.downloadUrl);
+        return;
+      }
+
       this.todos.all().then(todos => {
         const headers = 'id,text,completed,createdAt\n';
         const rows = todos.map(todo => {

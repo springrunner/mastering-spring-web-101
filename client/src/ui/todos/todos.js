@@ -208,8 +208,7 @@ class TodosView {
         return;
       }
 
-      this.onDownloadTodos((content, contentType, fileName) => {
-        const blob = new Blob([content], { type: contentType });
+      const save = (blob, fileName) => {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.setAttribute('href', url);
@@ -218,6 +217,35 @@ class TodosView {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+      }
+
+      this.onDownloadTodos((...args) => {
+        if (args.length === 3) {
+          const [content, contentType, fileName] = args;
+          save(new Blob([content], { type: contentType }), fileName);
+        } else if (args.length === 1) {
+          const [url] = args;
+          if (typeof url === 'string' && url.startsWith('http')) {
+            console.error('Warning: Invalid download url');
+            return;
+          }
+
+          fetch(url, { headers: { 'Accept': 'text/csv' }}).then(response => {
+            let fileName = 'todos.csv';
+
+            const contentDisposition = response.headers.get('Content-Disposition');            
+            if (contentDisposition) {
+              const matches = contentDisposition.match(/filename\*?=['"]?(?:UTF-\d['"]*)?([^;\r\n"']*)['"]?/i);
+              if (matches && matches[1]) {
+                fileName = matches[1];
+              }
+            }
+
+            return response.blob().then(blob => ({ blob, fileName }));
+          }).then(({ blob, fileName }) => save(blob, fileName)).catch(this.onError.bind(this));
+        } else {
+          console.error('Warning: Unable to resolve download todos');
+        }
       });
     });    
   }

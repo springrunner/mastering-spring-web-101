@@ -30,6 +30,7 @@ featureToggles.notify();
 
 const todosControler = new TodosController(
   {
+    downloadUrl: isDevelopmentMode ? null : '/todos',
     loginUrl: isDevelopmentMode ? '/pages/login.html' : '/login',
     logoutUrl: isDevelopmentMode ? null : '/logout',
     logoutSuccessUrl: isDevelopmentMode ? '/pages/login.html' : null,
