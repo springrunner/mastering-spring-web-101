@@ -17,10 +17,11 @@
   left: 50%;
   transform: translateX(-50%);
   border-radius: 2px;
-  display: flex;
+  display: block;
   align-items: center;
   justify-content: center;
   overflow-wrap: break-word;
+  white-space: pre-line;
 }
 
 #snackbar.show {

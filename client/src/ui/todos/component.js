@@ -7,7 +7,15 @@ const Snackbar = () => {
   return {
     show: (error, autoHideDuration = DEFAULT_AUTO_HIDE_DURATION) => {
       if (error instanceof Error) {
-        snackbar.textContent = error.message || DEFAULT_ERROR_MESSAGE;
+        const message = error.message || DEFAULT_ERROR_MESSAGE;
+        const details = error.details || []; 
+
+        if (details && details.length > 0) {
+          const formattedDetails = details.map(it => `<div>${it}</div>`).join('');
+          snackbar.innerHTML = `${message}\n${formattedDetails}`;
+        } else {
+          snackbar.textContent = message;
+        }
       } else if (typeof error === 'string') {
         snackbar.textContent = error;
       } else {

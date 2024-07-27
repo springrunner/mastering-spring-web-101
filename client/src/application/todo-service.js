@@ -28,12 +28,29 @@ const LocalStorageTodosService = (localStorage) => {
 
 const WebAPITodosService = (apiUrl = "/api/todos") => {
   const headers = { 'Content-Type': 'application/json' };
+  const handleResponse = async (response) => {
+    if (response.status >= 200 && response.status < 300) {
+      return response.json().catch(parseError => null);
+    } else {
+      let data = {};
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        console.warn('Failed to parse JSON response:', parseError);
+      }  
+
+      const error = new Error(data.message ?? "Failed to process in server");
+      error.name = data.error ?? "Unknown Error";
+      error.details = (data.errors ?? []).map(it => typeof it === 'string' ? it : it.defaultMessage)
+
+      throw error;
+    }
+  }
 
   return {
     all: async () => {
       const response = await fetch(apiUrl);
-      if (!response.ok) throw new Error(`Failed to fetch all todos: ${response.status}`);
-      return await response.json();
+      return await handleResponse(response);
     },
     add: async (todo) => {
       const response = await fetch(apiUrl, {
@@ -41,7 +58,7 @@ const WebAPITodosService = (apiUrl = "/api/todos") => {
         headers,
         body: JSON.stringify(todo)
       });
-      if (!response.ok) throw new Error(`Failed to add todo: ${response.status}`);
+      return await handleResponse(response);
     },
     edit: async (updatedTodo) => {
       const response = await fetch(`${apiUrl}/${updatedTodo.id}`, {
@@ -49,14 +66,14 @@ const WebAPITodosService = (apiUrl = "/api/todos") => {
         headers,
         body: JSON.stringify(updatedTodo)
       });
-      if (!response.ok) throw new Error(`Failed to edit todo: ${response.status}`);
+      return await handleResponse(response);
     },
     remove: async (todoId) => {
       const response = await fetch(`${apiUrl}/${todoId}`, {
         method: 'DELETE',
         headers
       });
-      if (!response.ok) throw new Error(`Failed to delete todo: ${response.status}`);
+      return await handleResponse(response);
     },
     clearCompleted: async () => {
       const todos = await this.all();
