@@ -18,4 +18,9 @@ public class TodoEntityNotFoundException extends TodoEntityException {
         return id;
     }
 
+    @Override
+    public Object[] getArguments() {
+        return new Object[]{id};
+    }
+
 }
