@@ -6,7 +6,7 @@ import { Todos, TodosView } from './todos.js';
 import TodosController from './controller.js';
 
 import { FeatureToggles } from '../feature-toggles.js';
-import { QueryStringFeatureTogglesService } from '../../application/feature-toggles-service.js';
+import { QueryStringFeatureTogglesService, WebAPIFeatureTogglesService } from '../../application/feature-toggles-service.js';
 
 const isDevelopmentMode = import.meta.env.MODE === 'development'
 
@@ -23,7 +23,7 @@ userCount.subscribe(userCountView);
 const todos = new Todos(isDevelopmentMode ? LocalStorageTodosService(localStorage) : WebAPITodosService());
 todos.subscribe(todosView);
 
-const featureToggles = new FeatureToggles(QueryStringFeatureTogglesService());
+const featureToggles = new FeatureToggles(isDevelopmentMode ? QueryStringFeatureTogglesService() : WebAPIFeatureTogglesService());
 featureToggles.subscribe(userSessionView);
 featureToggles.subscribe(userCountView);
 featureToggles.notify();
