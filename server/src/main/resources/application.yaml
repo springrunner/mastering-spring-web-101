@@ -1,4 +1,7 @@
 todoapp:
+  feature-toggles:
+    auth: true
+    online-users-counter: false
   site:
     author: SpringRunner
     description: What're your plans today?
