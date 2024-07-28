@@ -24,6 +24,64 @@ const LocalStorageUserProfileService = (localStorage) => {
   };
 }
 
+const WebAPIUserProfileService = (
+  fetchProfileUrl = "/api/user/profile", 
+  clearProfileUrl = "/logout",
+  updateProfilePictureUrl = "/api/user/profile-picture",
+) => {
+  const headers = { 'Content-Type': 'application/json' };
+  const handleResponse = async (response) => {
+    if (!response.ok) {
+      if (response.status === 401) {
+        console.warn('Unauthorized access detected on the server');
+        return null;
+      } else if (response.status === 404) {
+        console.warn('user-profile are not yet implemented on the server');
+        return null;
+      }
+
+      const data = await response.json();
+      const error = new Error(data.message ?? "Failed to process in server");
+      error.name = data.error ?? "Unknown Error";
+      error.details = (data.errors ?? []).map(it => typeof it === 'string' ? it : it.defaultMessage)
+
+      throw error;
+    }
+    return response.json();
+  }
+
+  return {
+    set: (userProfile) => {
+      throw new Error("Unsupported set user-profile operation");
+    },
+    get: async () => {
+      const response = await fetch(fetchProfileUrl, {
+        headers
+      });
+      return await handleResponse(response);
+    },
+    clear: async () => {
+      const response = await fetch(clearProfileUrl, {
+        headers
+      });
+      return await handleResponse(response);
+    },
+    updateProfilePicture: async(profilePicture) => {
+      const formData = new FormData();
+      formData.append('profilePicture', profilePicture);
+    
+      const response = await fetch(updateProfilePictureUrl, {
+        method: 'POST',
+        header: {
+          'Content-Type': 'multipart/form-data'
+        },
+        body: formData
+      });
+      return await handleResponse(response);
+    }    
+  };
+}
+
 const RandomUserCountService = (interval = 30000) => {
   let intervalId;
 
@@ -69,4 +127,4 @@ const OnlineUserCountService = (streamUrl = '/stream/online-users-counter') => {
   }
 }
 
-export { LocalStorageUserProfileService, RandomUserCountService, OnlineUserCountService };
+export { LocalStorageUserProfileService, WebAPIUserProfileService, RandomUserCountService, OnlineUserCountService };
