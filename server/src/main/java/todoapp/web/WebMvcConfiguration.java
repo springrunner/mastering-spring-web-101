@@ -5,14 +5,18 @@ import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import todoapp.commons.web.error.ReadableErrorAttributes;
 import todoapp.commons.web.view.CommaSeparatedValuesView;
+import todoapp.security.UserSessionHolder;
+import todoapp.web.support.method.UserSessionHandlerMethodArgumentResolver;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Spring Web MVC 설정 정보이다.
@@ -22,10 +26,18 @@ import java.util.ArrayList;
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
+    @Autowired
+    private UserSessionHolder userSessionHolder;
+
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
         // registry.enableContentNegotiation();
         // 위와 같이 직접 설정하면, 스프링부트가 구성한 ContentNegotiatingViewResolver 전략이 무시된다.
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new UserSessionHandlerMethodArgumentResolver(userSessionHolder));
     }
 
     @Bean

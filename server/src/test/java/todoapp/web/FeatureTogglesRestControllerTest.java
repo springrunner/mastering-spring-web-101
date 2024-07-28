@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import todoapp.security.UserSessionHolder;
 import todoapp.web.model.FeatureTogglesProperties;
 import todoapp.web.model.SiteProperties;
 
@@ -24,6 +25,9 @@ class FeatureTogglesRestControllerTest {
 
     @MockBean
     private SiteProperties siteProperties;
+
+    @MockBean
+    private UserSessionHolder userSessionHolder;
 
     @Test
     void featureToggles() throws Exception {
