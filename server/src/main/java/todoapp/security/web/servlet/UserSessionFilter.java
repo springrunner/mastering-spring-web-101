@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.OncePerRequestFilter;
-import todoapp.commons.NotImplementedException;
 import todoapp.security.UserSession;
 import todoapp.security.UserSessionHolder;
 
@@ -34,14 +33,16 @@ public class UserSessionFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("processing user-session filter");
 
-        throw new NotImplementedException();
+        var userSession = userSessionHolder.get();
+        var requestWrapper = new UserSessionRequestWrapper(request, userSession);
+
+        filterChain.doFilter(requestWrapper, response);
     }
-
-
+    
     /**
      * 로그인 사용자 세션을 기반으로 인증 객체와 역할 확인 기능을 제공한다.
      */
-    final class UserSessionRequestWrapper extends HttpServletRequestWrapper {
+    final static class UserSessionRequestWrapper extends HttpServletRequestWrapper {
 
         final UserSession userSession;
 
@@ -52,12 +53,15 @@ public class UserSessionFilter extends OncePerRequestFilter {
 
         @Override
         public Principal getUserPrincipal() {
-            throw new NotImplementedException();
+            return userSession;
         }
 
         @Override
         public boolean isUserInRole(String role) {
-            throw new NotImplementedException();
+            if (Objects.isNull(userSession)) {
+                return false;
+            }
+            return userSession.hasRole(role);
         }
 
     }

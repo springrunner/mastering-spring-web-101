@@ -2,6 +2,7 @@ package todoapp.security;
 
 import todoapp.core.user.domain.User;
 
+import java.security.Principal;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
@@ -12,7 +13,7 @@ import java.util.Set;
  *
  * @author springrunner.kr@gmail.com
  */
-public class UserSession {
+public class UserSession implements Principal {
 
     public static final String ROLE_USER = "ROLE_USER";
 
@@ -24,6 +25,7 @@ public class UserSession {
         this.roles.add(ROLE_USER);
     }
 
+    @Override
     public String getName() {
         return user.getUsername();
     }
