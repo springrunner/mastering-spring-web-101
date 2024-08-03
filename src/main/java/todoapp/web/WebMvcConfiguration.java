@@ -1,6 +1,7 @@
 package todoapp.web;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
@@ -12,6 +13,14 @@ import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
  */
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // registry.addResourceHandler("/assets/**").addResourceLocations("assets/");
+        // registry.addResourceHandler("/assets/**").addResourceLocations("file:./files/assets/");
+        // registry.addResourceHandler("/assets/**").addResourceLocations("classpath:assets/");
+        // registry.addResourceHandler("/assets/**").addResourceLocations("assets/", "file:./files/assets/", "classpath:assets/");
+    }
 
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {

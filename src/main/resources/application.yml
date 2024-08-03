@@ -4,5 +4,6 @@ spring:
 
 logging:
   level:
-    web: debug
+    '[org.springframework.beans]': debug
+    web: trace
     sql: debug
