@@ -11,6 +11,7 @@ spring:
 
 logging:
   level:
+    '[todoapp]': debug
     '[org.springframework.beans]': debug
     web: trace
     sql: debug
