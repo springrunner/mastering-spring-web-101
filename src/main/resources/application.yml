@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: todos
+
+logging:
+  level:
+    web: debug
+    sql: debug
