@@ -30,14 +30,14 @@ public class Todo implements Serializable {
 
     public Todo(TodoId id, String text, LocalDateTime createdDate) {
         this.id = Objects.requireNonNull(id, "id must be not null");
-        this.text = Objects.requireNonNull(text, "text must be not null");
+        this.setText(text);
         this.createdDate = createdDate;
         this.lastModifiedDate = createdDate;
     }
 
     public Todo(TodoId id, String text, String username, LocalDateTime createdDate) {
         this.id = Objects.requireNonNull(id, "id must be not null");
-        this.text = Objects.requireNonNull(text, "text must be not null");
+        this.setText(text);
         this.username = Objects.requireNonNull(username, "username must be not null");
         this.createdDate = createdDate;
         this.lastModifiedDate = createdDate;
@@ -85,7 +85,7 @@ public class Todo implements Serializable {
     }
 
     public Todo update(String text, boolean completed) {
-        this.text = text;
+        this.setText(text);
         this.state = completed ? TodoState.COMPLETED : TodoState.ACTIVE;
         this.lastModifiedDate = LocalDateTime.now();
         return this;
@@ -93,6 +93,10 @@ public class Todo implements Serializable {
 
     public Todo update(String text, boolean completed, String username) {
         return verifyUsername(username).update(text, completed);
+    }
+
+    private void setText(String text) {
+        this.text = checkText(text);
     }
 
     private Todo verifyUsername(String username) {
