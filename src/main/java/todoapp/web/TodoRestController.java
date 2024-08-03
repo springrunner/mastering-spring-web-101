@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import todoapp.core.todo.application.TodoCleanup;
 import todoapp.core.todo.application.TodoFind;
 import todoapp.core.todo.application.TodoModification;
 import todoapp.core.todo.application.TodoRegistry;
@@ -22,13 +23,15 @@ public class TodoRestController {
     private final TodoFind find;
     private final TodoRegistry registry;
     private final TodoModification modification;
+    private final TodoCleanup cleanup;
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public TodoRestController(TodoFind find, TodoRegistry registry, TodoModification modification) {
+    public TodoRestController(TodoFind find, TodoRegistry registry, TodoModification modification, TodoCleanup cleanup) {
         this.find = Objects.requireNonNull(find);
         this.registry = Objects.requireNonNull(registry);
         this.modification = Objects.requireNonNull(modification);
+        this.cleanup = Objects.requireNonNull(cleanup);
     }
 
     @GetMapping
@@ -49,6 +52,13 @@ public class TodoRestController {
         log.debug("request id: {}, command: {}", id, command);
 
         modification.modify(TodoId.of(id), command.text, command.completed());
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable String id) {
+        log.debug("request id: {}", id);
+
+        cleanup.clear(TodoId.of(id));
     }
 
     record WriteTodoCommand(@NotBlank @Size(min = 4, max = 140) String text, boolean completed) {
