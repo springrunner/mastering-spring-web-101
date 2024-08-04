@@ -34,14 +34,13 @@ public class RolesVerifyHandlerInterceptor implements HandlerInterceptor, RolesA
             log.debug("verify roles-allowed: {}", rolesAllowed);
 
             // 1. 로그인이 되어 있나요?
-            var userSession = userSessionHolder.get();
-            if (Objects.isNull(userSession)) {
+            if (Objects.isNull(request.getUserPrincipal())) {
                 throw new UnauthorizedAccessException();
             }
 
             // 2. 역할은 적절한가요?       
             var matchedRoles = Stream.of(rolesAllowed.value())
-                    .filter(userSession::hasRole)
+                    .filter(request::isUserInRole)
                     .collect(Collectors.toSet());
 
             log.debug("matched roles: {}", matchedRoles);
