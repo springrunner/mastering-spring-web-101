@@ -1,10 +1,11 @@
 package todoapp.web.support.method;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import todoapp.commons.NotImplementedException;
+import todoapp.core.user.domain.ProfilePicture;
 import todoapp.core.user.domain.ProfilePictureStorage;
 
 import java.util.Objects;
@@ -24,12 +25,16 @@ public class ProfilePictureReturnValueHandler implements HandlerMethodReturnValu
 
     @Override
     public boolean supportsReturnType(MethodParameter returnType) {
-        throw new NotImplementedException();
+        return ProfilePicture.class.isAssignableFrom(returnType.getParameterType());
     }
 
     @Override
     public void handleReturnValue(Object returnValue, MethodParameter returnType, ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws Exception {
-        throw new NotImplementedException();
+        var response = webRequest.getNativeResponse(HttpServletResponse.class);
+        var profilePicture = profilePictureStorage.load(((ProfilePicture) returnValue).getUri());
+        profilePicture.getInputStream().transferTo(response.getOutputStream());
+
+        mavContainer.setRequestHandled(true);
     }
 
 }

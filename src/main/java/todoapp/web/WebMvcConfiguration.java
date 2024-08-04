@@ -12,6 +12,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ObjectToStringHttpMessageConverter;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
@@ -23,8 +24,10 @@ import todoapp.commons.web.servlet.ExecutionTimeHandlerInterceptor;
 import todoapp.commons.web.servlet.LoggingHandlerInterceptor;
 import todoapp.commons.web.view.CommaSeparatedValuesView;
 import todoapp.core.todo.domain.Todo;
+import todoapp.core.user.domain.ProfilePictureStorage;
 import todoapp.security.UserSessionHolder;
 import todoapp.security.web.servlet.RolesVerifyHandlerInterceptor;
+import todoapp.web.support.method.ProfilePictureReturnValueHandler;
 import todoapp.web.support.method.UserSessionHandlerMethodArgumentResolver;
 
 import java.util.ArrayList;
@@ -41,6 +44,9 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     @Autowired
     private UserSessionHolder userSessionHolder;
+
+    @Autowired
+    private ProfilePictureStorage profilePictureStorage;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -68,6 +74,11 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new UserSessionHandlerMethodArgumentResolver(userSessionHolder));
+    }
+
+    @Override
+    public void addReturnValueHandlers(List<HandlerMethodReturnValueHandler> handlers) {
+        handlers.add(new ProfilePictureReturnValueHandler(profilePictureStorage));
     }
 
     @Override
