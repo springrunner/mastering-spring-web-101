@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
@@ -15,7 +14,6 @@ import org.springframework.web.servlet.view.AbstractView;
 import todoapp.core.todo.application.TodoFind;
 import todoapp.core.todo.domain.Todo;
 import todoapp.web.convert.TodoToSpreadsheetConverter;
-import todoapp.web.model.SiteProperties;
 
 import java.util.*;
 
@@ -23,16 +21,9 @@ import java.util.*;
 public class TodoController {
 
     private final TodoFind find;
-    private final SiteProperties siteProperties;
 
-    public TodoController(TodoFind find, SiteProperties siteProperties) {
+    public TodoController(TodoFind find) {
         this.find = Objects.requireNonNull(find);
-        this.siteProperties = Objects.requireNonNull(siteProperties);
-    }
-
-    @ModelAttribute("site")
-    public SiteProperties siteProperties() {
-        return siteProperties;
     }
 
     @RequestMapping("/todos")
