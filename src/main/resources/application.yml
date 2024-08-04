@@ -4,7 +4,7 @@ todoapp:
     description: What're your plans today?
   feature-toggles:
     auth: true
-    online-users-counter: false
+    online-users-counter: true
   data:
     initialize: true
 
