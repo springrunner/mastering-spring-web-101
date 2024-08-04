@@ -10,6 +10,9 @@ spring:
     name: todos
 
 server:
+  error:
+    include-message: always
+    include-binding-errors: always
   servlet:
     encoding:
       mapping:
