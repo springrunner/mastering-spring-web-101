@@ -9,6 +9,15 @@ spring:
   application:
     name: todos
 
+server:
+  servlet:
+    encoding:
+      mapping:
+        en: ISO-8859-1
+        ko: UTF-8
+      charset: utf-8
+      force: true
+
 logging:
   level:
     '[todoapp]': debug
