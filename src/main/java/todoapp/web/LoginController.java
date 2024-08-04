@@ -38,8 +38,11 @@ public class LoginController {
     }
 
     @GetMapping("/login")
-    public void loginForm() {
-
+    public String loginForm() {
+        if (Objects.nonNull(userSessionHolder.get())) {
+            return "redirect:/todos";
+        }
+        return "login";
     }
 
     @PostMapping("/login")
