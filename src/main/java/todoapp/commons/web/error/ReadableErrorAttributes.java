@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
+import org.springframework.context.MessageSource;
 import org.springframework.core.Ordered;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.request.WebRequest;
@@ -26,9 +27,15 @@ import java.util.Objects;
  */
 public class ReadableErrorAttributes implements ErrorAttributes, HandlerExceptionResolver, Ordered {
 
+    private final MessageSource messageSource;
+
     private final DefaultErrorAttributes delegate = new DefaultErrorAttributes();
     private final Logger log = LoggerFactory.getLogger(getClass());
-    
+
+    public ReadableErrorAttributes(MessageSource messageSource) {
+        this.messageSource = Objects.requireNonNull(messageSource);
+    }
+
     @Override
     public Map<String, Object> getErrorAttributes(WebRequest webRequest, ErrorAttributeOptions options) {
         var attributes = delegate.getErrorAttributes(webRequest, options);
@@ -37,8 +44,10 @@ public class ReadableErrorAttributes implements ErrorAttributes, HandlerExceptio
         log.debug("obtain error-attributes: {}", attributes, error);
 
         if (Objects.nonNull(error)) {
-            // TODO attributes, error 을 사용해 message 속성을 읽기 좋은 문구로 가공한다.
-            // TODO ex) attributes.put("message", "문구");
+            var errorCode = "Exception.%s".formatted(error.getClass().getSimpleName());
+            var errorMessage = messageSource.getMessage(errorCode, new Object[0], error.getMessage(), webRequest.getLocale());
+
+            attributes.put("message", errorMessage);
         }
 
         return attributes;
@@ -69,5 +78,5 @@ public class ReadableErrorAttributes implements ErrorAttributes, HandlerExceptio
         }
         return null;
     }
-    
+
 }
