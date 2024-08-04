@@ -24,6 +24,7 @@ import todoapp.commons.web.servlet.LoggingHandlerInterceptor;
 import todoapp.commons.web.view.CommaSeparatedValuesView;
 import todoapp.core.todo.domain.Todo;
 import todoapp.security.UserSessionHolder;
+import todoapp.security.web.servlet.RolesVerifyHandlerInterceptor;
 import todoapp.web.support.method.UserSessionHandlerMethodArgumentResolver;
 
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoggingHandlerInterceptor());
         registry.addInterceptor(new ExecutionTimeHandlerInterceptor());
+        registry.addInterceptor(new RolesVerifyHandlerInterceptor(userSessionHolder));
     }
 
     @Override

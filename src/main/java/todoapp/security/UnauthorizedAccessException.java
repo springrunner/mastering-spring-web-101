@@ -1,5 +1,7 @@
 package todoapp.security;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import todoapp.commons.SystemException;
 
 /**
@@ -7,6 +9,7 @@ import todoapp.commons.SystemException;
  *
  * @author springrunner.kr@gmail.com
  */
+@ResponseStatus(HttpStatus.UNAUTHORIZED)
 public class UnauthorizedAccessException extends SystemException {
 
     public UnauthorizedAccessException() {
