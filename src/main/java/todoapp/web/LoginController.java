@@ -11,23 +11,30 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import todoapp.core.user.application.UserPasswordVerifier;
 import todoapp.core.user.application.UserRegistration;
+import todoapp.core.user.domain.User;
 import todoapp.core.user.domain.UserEntityNotFoundException;
 import todoapp.core.user.domain.UserPasswordNotMatchedException;
+import todoapp.security.UserSession;
+import todoapp.security.UserSessionHolder;
 
 import java.util.Objects;
 
 @Controller
+@SessionAttributes("user")
 public class LoginController {
 
     private final UserPasswordVerifier verifier;
     private final UserRegistration registration;
+    private final UserSessionHolder userSessionHolder;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public LoginController(UserPasswordVerifier verifier, UserRegistration registration) {
+    public LoginController(UserPasswordVerifier verifier, UserRegistration registration, UserSessionHolder userSessionHolder) {
         this.verifier = Objects.requireNonNull(verifier);
         this.registration = Objects.requireNonNull(registration);
+        this.userSessionHolder = Objects.requireNonNull(userSessionHolder);
     }
 
     @GetMapping("/login")
@@ -46,13 +53,15 @@ public class LoginController {
             return "login";
         }
 
+        User user;
         try {
             // 1. 사용자 저장소에 사용자가 있을 경우: 비밀번호 확인 후 로그인 처리
-            verifier.verify(command.username(), command.password());
+            user = verifier.verify(command.username(), command.password());
         } catch (UserEntityNotFoundException error) {
             // 2. 사용자가 없는 경우: 회원가입 처리 후 로그인 처리
-            registration.join(command.username(), command.password());
+            user = registration.join(command.username(), command.password());
         }
+        userSessionHolder.set(new UserSession(user));
 
         // 리다이렉트 처리를 하려면 뷰이름 앞에 'redirect:'를 붙여주면됨
         return "redirect:/todos";
