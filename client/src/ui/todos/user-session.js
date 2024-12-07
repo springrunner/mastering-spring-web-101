@@ -110,8 +110,6 @@ class UserSessionView {
   }
 
   onChangedUserSession(userSession) {
-    this.userSessionContainer.style.display = 'block';
-
     const { userProfile } = userSession || {};
     if (userProfile) {
       this.loginGuide.style.display = 'none';
