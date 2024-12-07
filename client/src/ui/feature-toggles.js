@@ -8,7 +8,14 @@ class FeatureToggles {
       onlineUsersCounter: false,
     };
 
-    this.refresh();
+    (async () => {
+      try {
+        this.props = await this.featureTogglesService.fetchAll();
+        this.notify();
+      } catch (error) {
+        console.warn('Failed to fetch feature-toggles:', error);
+      }
+    })();
   }
 
   subscribe(subscriber) {
@@ -17,11 +24,6 @@ class FeatureToggles {
   
   async notify() {
     this.subscribers.forEach((subscriber) => subscriber.onChangedFeatureToggles(this.props));
-  }
-
-  async refresh() {
-    this.props = await this.featureTogglesService.fetchAll();
-    this.notify();
   }
 
   isAuth() {
