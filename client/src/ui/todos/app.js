@@ -10,6 +10,8 @@ import { QueryStringFeatureTogglesService, WebAPIFeatureTogglesService } from '.
 
 const isDevelopmentMode = import.meta.env.MODE === 'development'
 
+const featureToggles = new FeatureToggles(isDevelopmentMode ? QueryStringFeatureTogglesService() : WebAPIFeatureTogglesService());
+
 const userSessionView = new UserSessionView();
 const userCountView = new UserCountView();
 const todosView = new TodosView();
@@ -23,8 +25,8 @@ userCount.subscribe(userCountView);
 const todos = new Todos(isDevelopmentMode ? LocalStorageTodosService(localStorage) : WebAPITodosService());
 todos.subscribe(todosView);
 
-const featureToggles = new FeatureToggles(isDevelopmentMode ? QueryStringFeatureTogglesService() : WebAPIFeatureTogglesService());
 featureToggles.subscribe(userSessionView);
+featureToggles.subscribe(userCount);
 featureToggles.subscribe(userCountView);
 featureToggles.notify();
 

@@ -4,11 +4,6 @@ class UserCount {
     this.subscribers = [];
     
     this.userCount = 1;
-
-    this.userCountService.connect(userCount => {
-      this.userCount = userCount;
-      this.notify();
-    });
   }
 
   subscribe(subscriber) {
@@ -17,6 +12,17 @@ class UserCount {
   
   async notify() {
     this.subscribers.forEach((subscriber) => subscriber.onChangedUserCount(this.userCount));
+  }
+
+  onChangedFeatureToggles(featureToggles) {
+    if (featureToggles.onlineUsersCounter) {
+      this.userCountService.connect(userCount => {
+        this.userCount = userCount;
+        this.notify();
+      });
+    } else {
+      this.userCountService.disconnect();
+    }
   }
 };
 
