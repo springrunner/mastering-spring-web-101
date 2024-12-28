@@ -11,13 +11,13 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import todoapp.core.shared.identifier.TodoId;
 import todoapp.core.todo.TodoFixture;
-import todoapp.core.todo.application.TodoCleanup;
-import todoapp.core.todo.application.TodoFind;
-import todoapp.core.todo.application.TodoModification;
-import todoapp.core.todo.application.TodoRegistry;
-import todoapp.core.todo.converter.json.TodoModule;
-import todoapp.core.todo.domain.TodoId;
+import todoapp.core.todo.application.AddTodo;
+import todoapp.core.todo.application.FindTodos;
+import todoapp.core.todo.application.ModifyTodo;
+import todoapp.core.todo.application.RemoveTodo;
+import todoapp.web.config.json.TodoModule;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -34,16 +34,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class TodoRestControllerTest {
 
     @Mock
-    private TodoFind todoFind;
+    private FindTodos findTodos;
 
     @Mock
-    private TodoRegistry todoRegistry;
+    private AddTodo addTodo;
 
     @Mock
-    private TodoModification todoModification;
+    private ModifyTodo modifyTodo;
 
     @Mock
-    private TodoCleanup todoCleanup;
+    private RemoveTodo removeTodo;
 
     private MockMvc mockMvc;
 
@@ -53,7 +53,7 @@ class TodoRestControllerTest {
                 .modules(new TodoModule(), new JavaTimeModule())
                 .build();
 
-        mockMvc = MockMvcBuilders.standaloneSetup(new TodoRestController(todoFind, todoRegistry, todoModification, todoCleanup))
+        mockMvc = MockMvcBuilders.standaloneSetup(new TodoRestController(findTodos, addTodo, modifyTodo, removeTodo))
                 .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper))
                 .build();
     }
@@ -63,7 +63,7 @@ class TodoRestControllerTest {
         var first = TodoFixture.random();
         var second = TodoFixture.random();
 
-        given(todoFind.all()).willReturn(Arrays.asList(first, second));
+        given(findTodos.all()).willReturn(Arrays.asList(first, second));
 
         mockMvc.perform(get("/api/todos"))
                 .andExpect(status().isOk())
@@ -86,7 +86,7 @@ class TodoRestControllerTest {
                         .content(todoJson)
         ).andExpect(status().isCreated());
 
-        verify(todoRegistry).register(todoText);
+        verify(addTodo).add(todoText);
     }
 
     @Test
@@ -112,7 +112,7 @@ class TodoRestControllerTest {
                         .content(todoJson)
         ).andExpect(status().isOk());
 
-        verify(todoModification).modify(todoId, todoText, true);
+        verify(modifyTodo).modify(todoId, todoText, true);
     }
 
     @Test
@@ -135,7 +135,7 @@ class TodoRestControllerTest {
                 delete("/api/todos/" + todoId)
         ).andExpect(status().isOk());
 
-        verify(todoCleanup).clear(todoId);
+        verify(removeTodo).remove(todoId);
     }
 
 }

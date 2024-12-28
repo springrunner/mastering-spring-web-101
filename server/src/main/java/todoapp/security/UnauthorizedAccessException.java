@@ -2,7 +2,7 @@ package todoapp.security;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import todoapp.commons.SystemException;
+import todoapp.core.foundation.SystemException;
 
 /**
  * 인증되지 않은 사용자 접근시 발생 가능한 예외 클래스이다.

@@ -21,4 +21,5 @@ server:
 logging:
   level:
     web: debug
+    sql: debug
     '[todoapp]': debug

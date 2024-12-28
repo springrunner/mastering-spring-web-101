@@ -1,7 +1,10 @@
 package todoapp.core.user.domain;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import todoapp.core.shared.identifier.UserId;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -14,12 +17,15 @@ import java.util.Objects;
 @Entity(name = "users")
 public class User implements Serializable {
 
-    @Id
+    @EmbeddedId
+    @AttributeOverride(name = "value", column = @Column(name = "id"))
+    private UserId id;
     private String username;
     private String password;
     private ProfilePicture profilePicture;
 
-    public User(String username, String password) {
+    public User(UserId id, String username, String password) {
+        this.id = Objects.requireNonNull(id, "id must be not null");
         this.username = Objects.requireNonNull(username, "username must be not null");
         this.password = Objects.requireNonNull(password, "password must be not null");
     }
@@ -27,6 +33,10 @@ public class User implements Serializable {
     // for hibernate
     @SuppressWarnings("unused")
     private User() {
+    }
+
+    public UserId getId() {
+        return id;
     }
 
     public String getUsername() {
@@ -71,16 +81,16 @@ public class User implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUsername());
+        return Objects.hash(getId());
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals(Object user) {
+        if (this == user)
             return true;
-        if (obj == null || getClass() != obj.getClass())
+        if (user == null || getClass() != user.getClass())
             return false;
-        return Objects.equals(getUsername(), ((User) obj).getUsername());
+        return Objects.equals(getId(), ((User) user).getId());
     }
 
     @Override

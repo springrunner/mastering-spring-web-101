@@ -5,7 +5,7 @@ package todoapp.core.user.domain;
  *
  * @author springrunner.kr@gmail.com
  */
-public class UserPasswordNotMatchedException extends UserEntityException {
+public class UserPasswordNotMatchedException extends UserException {
 
     public UserPasswordNotMatchedException() {
         super("entered password does not match");

@@ -18,11 +18,11 @@ import static org.springframework.web.context.request.RequestAttributes.SCOPE_SE
  * @author springrunner.kr@gmail.com
  */
 @Component
-public class HttpUserSessionHolder implements UserSessionHolder {
+class HttpUserSessionHolder implements UserSessionHolder {
 
-    private static final String USER_SESSION_KEY = HttpUserSessionHolder.class.getName();
+    static final String USER_SESSION_KEY = HttpUserSessionHolder.class.getName();
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public UserSession get() {
@@ -33,13 +33,16 @@ public class HttpUserSessionHolder implements UserSessionHolder {
     public void set(UserSession session) {
         Objects.requireNonNull(session, "session object must be not null");
         currentRequestAttributes().setAttribute(USER_SESSION_KEY, session, SCOPE_SESSION);
-        log.info("saved new session: {}", session);
+        log.info("saved new session. username is `{}`", session.getName());
     }
 
     @Override
-    public void clear() {
-        currentRequestAttributes().removeAttribute(USER_SESSION_KEY, SCOPE_SESSION);
-        log.info("session cleared");
+    public void reset() {
+        UserSession session = get();
+        if (Objects.nonNull(session)) {
+            currentRequestAttributes().removeAttribute(USER_SESSION_KEY, SCOPE_SESSION);
+            log.info("reset session. username is `{}`", session.getName());
+        }
     }
 
     private RequestAttributes currentRequestAttributes() {

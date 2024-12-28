@@ -17,7 +17,7 @@ public class ProfilePicture implements Serializable {
     private URI uri;
 
     public ProfilePicture(URI uri) {
-        setUri(Objects.requireNonNull(uri));
+        setUri(Objects.requireNonNull(uri, "uri must be not null"));
     }
 
     // for hibernate

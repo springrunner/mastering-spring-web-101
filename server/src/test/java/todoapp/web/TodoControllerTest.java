@@ -11,11 +11,11 @@ import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.accept.HeaderContentNegotiationStrategy;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
-import todoapp.commons.domain.Spreadsheet;
-import todoapp.commons.web.view.CommaSeparatedValuesView;
+import todoapp.core.shared.util.Spreadsheet;
 import todoapp.core.todo.TodoFixture;
-import todoapp.core.todo.application.TodoFind;
-import todoapp.web.convert.TodoToSpreadsheetConverter;
+import todoapp.core.todo.application.FindTodos;
+import todoapp.core.todo.domain.support.SpreadsheetConverter;
+import todoapp.web.support.servlet.view.CommaSeparatedValuesView;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class TodoControllerTest {
 
     @Mock
-    private TodoFind todoFind;
+    private FindTodos findTodos;
 
     private MockMvc mockMvc;
 
@@ -48,7 +48,7 @@ class TodoControllerTest {
         characterEncodingFilter.setForceEncoding(true);
 
         mockMvc = MockMvcBuilders
-                .standaloneSetup(new TodoController(todoFind))
+                .standaloneSetup(new TodoController(findTodos))
                 .setViewResolvers(contentNegotiatingViewResolver)
                 .addFilter(characterEncodingFilter)
                 .build();
@@ -61,26 +61,20 @@ class TodoControllerTest {
                 TodoFixture.random()
         );
 
-        when(todoFind.all()).thenReturn(todos);
+        when(findTodos.all()).thenReturn(todos);
 
         mockMvc.perform(get("/todos").accept("text/csv"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(toCSV(new TodoToSpreadsheetConverter().convert(todos))));
+                .andExpect(content().string(toCSV(SpreadsheetConverter.convert(todos))));
     }
 
     private String toCSV(Spreadsheet spreadsheet) {
         var header = spreadsheet.getHeader()
-                .map(row ->
-                        row.getCells().stream()
-                                .map(cell -> cell.value().toString())
-                                .collect(Collectors.joining(",")))
+                .map(row -> row.joining(","))
                 .orElse("");
 
         var rows = spreadsheet.getRows().stream()
-                .map(row ->
-                        row.getCells().stream()
-                                .map(cell -> cell.value().toString())
-                                .collect(Collectors.joining(",")))
+                .map(row -> row.joining(","))
                 .collect(Collectors.joining("\n"));
 
         return header + "\n" + rows + "\n";

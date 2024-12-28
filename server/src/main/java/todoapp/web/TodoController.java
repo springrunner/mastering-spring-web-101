@@ -3,20 +3,20 @@ package todoapp.web;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import todoapp.core.todo.application.TodoFind;
-import todoapp.web.convert.TodoToSpreadsheetConverter;
+import todoapp.core.todo.application.FindTodos;
+import todoapp.core.todo.domain.support.SpreadsheetConverter;
 
 import java.util.Objects;
 
 @Controller
 public class TodoController {
 
-    private final TodoFind find;
+    private final FindTodos findTodos;
 
-    public TodoController(TodoFind find) {
-        this.find = Objects.requireNonNull(find);
+    public TodoController(FindTodos findTodos) {
+        this.findTodos = Objects.requireNonNull(findTodos);
     }
-    
+
     @RequestMapping("/todos")
     public void todos() {
 
@@ -24,7 +24,7 @@ public class TodoController {
 
     @RequestMapping(value = "/todos", produces = "text/csv")
     public void downloadTodos(Model model) {
-        model.addAttribute(new TodoToSpreadsheetConverter().convert(find.all()));
+        model.addAttribute(SpreadsheetConverter.convert(findTodos.all()));
     }
 
 }

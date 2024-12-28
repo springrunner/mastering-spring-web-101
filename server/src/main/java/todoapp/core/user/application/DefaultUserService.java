@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import todoapp.core.foundation.crypto.PasswordEncoder;
 import todoapp.core.user.domain.*;
 
 import java.util.Objects;
@@ -15,27 +16,33 @@ import java.util.Objects;
  */
 @Service
 @Transactional
-public class DefaultUserService implements UserPasswordVerifier, UserRegistration, ProfilePictureChanger {
+class DefaultUserService implements VerifyUserPassword, RegisterUser, ChangeUserProfilePicture {
 
-    private final UserRepository userRepository;
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
+    private final UserIdGenerator userIdGenerator;
     private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-    public DefaultUserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = Objects.requireNonNull(userRepository);
+    DefaultUserService(UserIdGenerator userIdGenerator, PasswordEncoder passwordEncoder, UserRepository userRepository) {
+        this.userIdGenerator = Objects.requireNonNull(userIdGenerator);
         this.passwordEncoder = Objects.requireNonNull(passwordEncoder);
+        this.userRepository = Objects.requireNonNull(userRepository);
     }
 
-    public User verify(String username, String rawPassword) {
-        return userRepository.findByUsername(username).orElseThrow(() -> new UserEntityNotFoundException(username))
+    public User verify(String username, String rawPassword) throws UserNotFoundException, UserPasswordNotMatchedException {
+        return userRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username))
                 .verifyPassword(passwordEncoder.encode(rawPassword));
     }
 
-    public User join(String username, String rawPassword) {
+    public User register(String username, String rawPassword) {
         return userRepository.findByUsername(username).orElseGet(() -> {
-            var user = userRepository.save(new User(username, passwordEncoder.encode(rawPassword)));
-            log.info("new user has joined (username: {})", user);
+            var user = userRepository.save(
+                    new User(userIdGenerator.generateId(), username, passwordEncoder.encode(rawPassword))
+            );
+            log.info("new user has joined: {}", user);
 
             return user;
         });
@@ -43,7 +50,10 @@ public class DefaultUserService implements UserPasswordVerifier, UserRegistratio
 
     @Override
     public User change(String username, ProfilePicture profilePicture) {
-        return userRepository.findByUsername(username).orElseThrow(() -> new UserEntityNotFoundException(username)).changeProfilePicture(profilePicture);
+        return userRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username))
+                .changeProfilePicture(profilePicture);
     }
 
 }

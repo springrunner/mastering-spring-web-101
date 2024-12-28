@@ -38,7 +38,7 @@ public class UserSessionFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(requestWrapper, response);
     }
-    
+
     /**
      * 로그인 사용자 세션을 기반으로 인증 객체와 역할 확인 기능을 제공한다.
      */

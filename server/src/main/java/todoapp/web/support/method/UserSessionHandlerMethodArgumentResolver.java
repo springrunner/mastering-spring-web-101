@@ -11,7 +11,7 @@ import todoapp.security.UserSessionHolder;
 import java.util.Objects;
 
 /**
- * 스프링 MVC 핸들러 인수로 사용자 세션 객체를 제공하기 위해 작성된 컴포넌트입니다.
+ * 스프링 MVC 핸들러 인수로 인증된 사용자 세션 객체를 제공하기 위해 작성된 컴포넌트입니다.
  *
  * @author springrunner.kr@gmail.com
  */

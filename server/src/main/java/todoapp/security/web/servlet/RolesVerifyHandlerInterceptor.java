@@ -1,12 +1,9 @@
 package todoapp.security.web.servlet;
 
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.annotation.AnnotatedElementUtils;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import todoapp.security.AccessDeniedException;
 import todoapp.security.UnauthorizedAccessException;
@@ -27,31 +24,25 @@ public class RolesVerifyHandlerInterceptor implements HandlerInterceptor, RolesA
 
     @Override
     public final boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (handler instanceof HandlerMethod method) {
-            var rolesAllowed = method.getMethodAnnotation(RolesAllowed.class);
-            if (Objects.isNull(rolesAllowed)) {
-                rolesAllowed = AnnotatedElementUtils.findMergedAnnotation(method.getBeanType(), RolesAllowed.class);
+        obtainRolesAllowed(handler).ifPresent(rolesAllowed -> {
+            log.debug("verify roles-allowed: {}", rolesAllowed);
+
+            // 1. 로그인이 되어 있나요?
+            if (Objects.isNull(request.getUserPrincipal())) {
+                throw new UnauthorizedAccessException();
             }
 
-            if (Objects.nonNull(rolesAllowed)) {
-                log.debug("verify roles-allowed: {}", rolesAllowed);
+            // 2. 권한은 적절한가요?
+            var matchedRoles = Stream.of(rolesAllowed.value())
+                    .filter(request::isUserInRole)
+                    .collect(Collectors.toSet());
 
-                // 1. 로그인이 되어 있나요?
-                if (Objects.isNull(request.getUserPrincipal())) {
-                    throw new UnauthorizedAccessException();
-                }
-
-                // 2. 권한은 적절한가요?
-                var matchedRoles = Stream.of(rolesAllowed.value())
-                        .filter(request::isUserInRole)
-                        .collect(Collectors.toSet());
-
-                log.debug("matched roles: {}", matchedRoles);
-                if (matchedRoles.isEmpty()) {
-                    throw new AccessDeniedException();
-                }
+            log.debug("matched roles: {}", matchedRoles);
+            if (matchedRoles.isEmpty()) {
+                throw new AccessDeniedException();
             }
-        }
+        });
+
         return true;
     }
 

@@ -7,7 +7,8 @@ package todoapp.core.todo.domain;
  */
 public enum TodoState {
 
-    ACTIVE("active", "Todo to be processed"), COMPLETED("completed", "Todo completed");
+    ACTIVE("active", "Todo to be processed"),
+    COMPLETED("completed", "Todo completed");
 
     private final String literal;
     private final String description;

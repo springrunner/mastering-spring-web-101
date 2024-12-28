@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
-import todoapp.core.user.application.UserPasswordVerifier;
-import todoapp.core.user.application.UserRegistration;
+import todoapp.core.user.application.RegisterUser;
+import todoapp.core.user.application.VerifyUserPassword;
 import todoapp.core.user.domain.User;
-import todoapp.core.user.domain.UserEntityNotFoundException;
+import todoapp.core.user.domain.UserNotFoundException;
 import todoapp.core.user.domain.UserPasswordNotMatchedException;
 import todoapp.security.UserSession;
 import todoapp.security.UserSessionHolder;
@@ -29,14 +29,14 @@ import java.util.Objects;
 @Controller
 public class LoginController {
 
-    private final UserPasswordVerifier verifier;
-    private final UserRegistration registration;
+    private final VerifyUserPassword verifyUserPassword;
+    private final RegisterUser registerUser;
     private final UserSessionHolder userSessionHolder;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public LoginController(UserPasswordVerifier verifier, UserRegistration registration, UserSessionHolder userSessionHolder) {
-        this.verifier = Objects.requireNonNull(verifier);
-        this.registration = Objects.requireNonNull(registration);
+    public LoginController(VerifyUserPassword verifyUserPassword, RegisterUser registerUser, UserSessionHolder userSessionHolder) {
+        this.verifyUserPassword = Objects.requireNonNull(verifyUserPassword);
+        this.registerUser = Objects.requireNonNull(registerUser);
         this.userSessionHolder = Objects.requireNonNull(userSessionHolder);
     }
 
@@ -55,10 +55,10 @@ public class LoginController {
         User user;
         try {
             // 1. 사용자 저장소에 사용자가 있을 경우: 비밀번호 확인 후 로그인 처리
-            user = verifier.verify(command.username(), command.password());
-        } catch (UserEntityNotFoundException error) {
+            user = verifyUserPassword.verify(command.username(), command.password());
+        } catch (UserNotFoundException error) {
             // 2. 사용자가 없는 경우: 회원가입 처리 후 로그인 처리
-            user = registration.join(command.username(), command.password());
+            user = registerUser.register(command.username(), command.password());
         } catch (UserPasswordNotMatchedException error) {
             // 3. 비밀번호가 틀린 경우: login 페이지로 돌려보내고, 오류 메시지 노출
             model.addAttribute("message", error.getMessage());
@@ -71,7 +71,7 @@ public class LoginController {
 
     @RequestMapping("/logout")
     public View logout() {
-        userSessionHolder.clear();
+        userSessionHolder.reset();
         return new RedirectView("/todos");
     }
 

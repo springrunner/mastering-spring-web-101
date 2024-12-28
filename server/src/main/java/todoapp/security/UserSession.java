@@ -25,13 +25,12 @@ public class UserSession implements Principal {
         this.roles.add(ROLE_USER);
     }
 
-    @Override
-    public String getName() {
-        return user.getUsername();
-    }
-
     public User getUser() {
         return user;
+    }
+
+    public String getName() {
+        return user.getUsername();
     }
 
     public Set<String> getRoles() {

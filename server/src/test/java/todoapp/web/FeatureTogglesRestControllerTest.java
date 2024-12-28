@@ -14,6 +14,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * @author springrunner.kr@gmail.com
+ */
 @WebMvcTest(FeatureTogglesRestController.class)
 class FeatureTogglesRestControllerTest {
 
@@ -38,4 +41,5 @@ class FeatureTogglesRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\"auth\":true,\"onlineUsersCounter\":false}"));
     }
+
 }

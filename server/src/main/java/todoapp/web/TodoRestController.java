@@ -8,12 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import todoapp.core.todo.application.TodoCleanup;
-import todoapp.core.todo.application.TodoFind;
-import todoapp.core.todo.application.TodoModification;
-import todoapp.core.todo.application.TodoRegistry;
+import todoapp.core.shared.identifier.TodoId;
+import todoapp.core.todo.application.AddTodo;
+import todoapp.core.todo.application.FindTodos;
+import todoapp.core.todo.application.ModifyTodo;
+import todoapp.core.todo.application.RemoveTodo;
 import todoapp.core.todo.domain.Todo;
-import todoapp.core.todo.domain.TodoId;
 import todoapp.security.UserSession;
 
 import java.util.List;
@@ -29,21 +29,21 @@ public class TodoRestController {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final TodoFind find;
-    private final TodoRegistry registry;
-    private final TodoModification modification;
-    private final TodoCleanup cleanup;
+    private final FindTodos findTodos;
+    private final AddTodo addTodo;
+    private final ModifyTodo modifyTodo;
+    private final RemoveTodo removeTodo;
 
-    public TodoRestController(TodoFind find, TodoRegistry registry, TodoModification modification, TodoCleanup cleanup) {
-        this.find = Objects.requireNonNull(find);
-        this.registry = Objects.requireNonNull(registry);
-        this.modification = Objects.requireNonNull(modification);
-        this.cleanup = Objects.requireNonNull(cleanup);
+    public TodoRestController(FindTodos findTodos, AddTodo addTodo, ModifyTodo modifyTodo, RemoveTodo removeTodo) {
+        this.findTodos = Objects.requireNonNull(findTodos);
+        this.addTodo = Objects.requireNonNull(addTodo);
+        this.modifyTodo = Objects.requireNonNull(modifyTodo);
+        this.removeTodo = Objects.requireNonNull(removeTodo);
     }
 
     @GetMapping
     public List<Todo> readAll() {
-        return find.all();
+        return findTodos.all();
     }
 
     @PostMapping
@@ -51,21 +51,21 @@ public class TodoRestController {
     public void create(@RequestBody @Valid WriteTodoCommand command) {
         log.debug("request command: {}", command);
 
-        registry.register(command.text());
+        addTodo.add(command.text());
     }
 
     @PutMapping("/{id}")
     public void update(@PathVariable("id") String id, @RequestBody @Valid WriteTodoCommand command) {
         log.debug("request id: {}, command: {}", id, command);
 
-        modification.modify(TodoId.of(id), command.text(), command.completed());
+        modifyTodo.modify(TodoId.of(id), command.text(), command.completed());
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable String id) {
+    public void delete(@PathVariable("id") String id) {
         log.debug("request id: {}", id);
 
-        cleanup.clear(TodoId.of(id));
+        removeTodo.remove(TodoId.of(id));
     }
 
     record WriteTodoCommand(@NotBlank @Size(min = 4, max = 140) String text, boolean completed) {
