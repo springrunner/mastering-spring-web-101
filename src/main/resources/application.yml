@@ -9,6 +9,12 @@ spring:
   application:
     name: todo
 
+server:
+  servlet:
+    encoding:
+      charset: utf-8
+      force: true
+
 logging:
   level:
     '[todoapp]': debug
