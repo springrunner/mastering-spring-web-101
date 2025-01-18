@@ -11,6 +11,7 @@ import todoapp.core.shared.identifier.TodoId;
 import todoapp.core.todo.application.AddTodo;
 import todoapp.core.todo.application.FindTodos;
 import todoapp.core.todo.application.ModifyTodo;
+import todoapp.core.todo.application.RemoveTodo;
 import todoapp.core.todo.domain.Todo;
 
 import java.util.Objects;
@@ -25,13 +26,15 @@ public class TodoRestController {
     private final FindTodos find;
     private final AddTodo add;
     private final ModifyTodo modify;
+    private final RemoveTodo remove;
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public TodoRestController(FindTodos find, AddTodo add, ModifyTodo modify) {
+    public TodoRestController(FindTodos find, AddTodo add, ModifyTodo modify, RemoveTodo remove) {
         this.find = Objects.requireNonNull(find);
         this.add = Objects.requireNonNull(add);
         this.modify = Objects.requireNonNull(modify);
+        this.remove = Objects.requireNonNull(remove);
     }
 
     @GetMapping
@@ -52,6 +55,13 @@ public class TodoRestController {
         log.debug("request id: {}, command: {}", id, command);
 
         modify.modify(TodoId.of(id), command.text, command.completed());
+    }
+
+    @DeleteMapping("/{id}")
+    public void remove(@PathVariable("id") String id) {
+        log.debug("request id: {}", id);
+
+        remove.remove(TodoId.of(id));
     }
 
     record WriteTodoCommand(@NotBlank @Size(min = 4, max = 140) String text, boolean completed) {
