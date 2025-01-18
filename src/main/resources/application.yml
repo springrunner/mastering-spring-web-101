@@ -2,7 +2,9 @@ todoapp:
   site:
     author: SpringRunner
     description: What're your plans today?
-    
+  data:
+    initialize: true
+
 spring:
   application:
     name: todo
