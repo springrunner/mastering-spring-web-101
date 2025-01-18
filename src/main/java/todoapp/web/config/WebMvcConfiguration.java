@@ -1,6 +1,7 @@
 package todoapp.web.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
@@ -12,6 +13,26 @@ import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
  */
 @Configuration
 class WebMvcConfiguration implements WebMvcConfigurer {
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // 여기서 ResourceHandler를 등록, 핸들러는 스프링 MVC에서 요청을 처리하기 위해 작성된 객체이다.
+
+        // 우리가 원하는 건, 다음 URL로 요청이 들어오면, 파일을 제공하는 것이다.
+        // http://localhost:8080/assets/base-CRAHsrqE.css
+
+        // 서블릿 루트 경로에서 제공하기
+        // registry.addResourceHandler("/assets/**").addResourceLocations("assets/");
+
+        // 파일 경로에서 제공하기
+        // registry.addResourceHandler("/assets/**").addResourceLocations("file:./files/assets/");
+
+        // 클래스패스 경로에서 제공하기
+        // registry.addResourceHandler("/assets/**").addResourceLocations("classpath:assets/");
+
+        // 여러(서블릿 루트, 파일, 클래스패스) 경로에서 제공하기
+        // registry.addResourceHandler("/assets/**").addResourceLocations("assets/", "file:./files/assets/", "classpath:assets/");
+    }
 
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
