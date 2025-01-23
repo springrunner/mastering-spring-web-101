@@ -1,6 +1,7 @@
 package todoapp.web.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +10,9 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ObjectToStringHttpMessageConverter;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -19,9 +22,12 @@ import todoapp.core.todo.domain.Todo;
 import todoapp.security.UserSessionHolder;
 import todoapp.web.support.method.UserSessionHandlerMethodArgumentResolver;
 import todoapp.web.support.servlet.error.ReadableErrorAttributes;
+import todoapp.web.support.servlet.handler.ExecutionTimeHandlerInterceptor;
+import todoapp.web.support.servlet.handler.LoggingHandlerInterceptor;
 import todoapp.web.support.servlet.view.CommaSeparatedValuesView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -38,6 +44,12 @@ class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new UserSessionHandlerMethodArgumentResolver(userSessionHolder));
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LoggingHandlerInterceptor());
+        registry.addInterceptor(new ExecutionTimeHandlerInterceptor());
     }
 
     @Override
@@ -82,6 +94,14 @@ class WebMvcConfiguration implements WebMvcConfigurer {
     @Bean
     ErrorAttributes errorAttributes(MessageSource messageSource) {
         return new ReadableErrorAttributes(messageSource);
+    }
+
+    @Bean
+    FilterRegistrationBean<CommonsRequestLoggingFilter> commonsRequestLoggingFilter() {
+        var filter = new FilterRegistrationBean<CommonsRequestLoggingFilter>();
+        filter.setFilter(new CommonsRequestLoggingFilter());
+        filter.setUrlPatterns(Collections.singletonList("/*"));
+        return filter;
     }
 
     /**
