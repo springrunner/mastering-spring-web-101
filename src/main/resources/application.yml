@@ -4,6 +4,9 @@ todoapp:
     description: What're your plans today?
   data:
     initialize: true
+  feature-toggles:
+    auth: true
+    online-users-counter: false
 
 spring:
   application:
