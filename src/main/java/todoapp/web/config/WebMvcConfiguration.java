@@ -1,6 +1,9 @@
 package todoapp.web.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.error.ErrorAttributes;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.DefaultConversionService;
@@ -12,6 +15,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import todoapp.core.todo.domain.Todo;
+import todoapp.web.support.servlet.error.ReadableErrorAttributes;
 import todoapp.web.support.servlet.view.CommaSeparatedValuesView;
 
 import java.util.ArrayList;
@@ -62,6 +66,11 @@ class WebMvcConfiguration implements WebMvcConfigurer {
         });
 
         converters.add(new ObjectToStringHttpMessageConverter(conversionService));
+    }
+
+    @Bean
+    ErrorAttributes errorAttributes(MessageSource messageSource) {
+        return new ReadableErrorAttributes(messageSource);
     }
 
     /**
