@@ -11,6 +11,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
 import todoapp.core.user.application.RegisterUser;
 import todoapp.core.user.application.VerifyUserPassword;
 import todoapp.core.user.domain.User;
@@ -69,6 +72,12 @@ public class LoginController {
         userSessionHolder.set(new UserSession(user));
 
         return "redirect:/todos";
+    }
+
+    @RequestMapping("/logout")
+    public View logout() {
+        userSessionHolder.reset();
+        return new RedirectView("/todos");
     }
 
     /*
