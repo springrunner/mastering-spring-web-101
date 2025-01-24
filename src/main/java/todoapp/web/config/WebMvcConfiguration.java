@@ -12,6 +12,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ObjectToStringHttpMessageConverter;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
@@ -19,8 +20,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import todoapp.core.todo.domain.Todo;
+import todoapp.core.user.domain.ProfilePictureStorage;
 import todoapp.security.UserSessionHolder;
 import todoapp.security.web.servlet.RolesVerifyHandlerInterceptor;
+import todoapp.web.support.method.ProfilePictureReturnValueHandler;
 import todoapp.web.support.method.UserSessionHandlerMethodArgumentResolver;
 import todoapp.web.support.servlet.error.ReadableErrorAttributes;
 import todoapp.web.support.servlet.handler.ExecutionTimeHandlerInterceptor;
@@ -42,9 +45,17 @@ class WebMvcConfiguration implements WebMvcConfigurer {
     @Autowired
     private UserSessionHolder userSessionHolder;
 
+    @Autowired
+    private ProfilePictureStorage profilePictureStorage;
+
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new UserSessionHandlerMethodArgumentResolver(userSessionHolder));
+    }
+
+    @Override
+    public void addReturnValueHandlers(List<HandlerMethodReturnValueHandler> handlers) {
+        handlers.add(new ProfilePictureReturnValueHandler(profilePictureStorage));
     }
 
     @Override
