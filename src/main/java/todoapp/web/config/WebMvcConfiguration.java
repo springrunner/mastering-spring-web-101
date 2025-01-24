@@ -51,7 +51,7 @@ class WebMvcConfiguration implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoggingHandlerInterceptor());
         registry.addInterceptor(new ExecutionTimeHandlerInterceptor());
-        registry.addInterceptor(new RolesVerifyHandlerInterceptor(userSessionHolder));
+        registry.addInterceptor(new RolesVerifyHandlerInterceptor());
     }
 
     @Override
