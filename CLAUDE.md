@@ -9,6 +9,10 @@ Guidelines for maintaining this document:
 - Separate client and server concerns clearly - they use different technologies and architectures
 - Keep it concise - AI should read actual code for specifics, use this for structure and principles
 
+Guidelines for AI working with this project:
+- Do not create git commits unless explicitly instructed by the user
+- Stage changes when appropriate, but wait for user confirmation before committing
+
 ## Overview
 
 Todoapp web application built with Spring Boot (server) and Vanilla JavaScript (client) for learning Spring MVC.
