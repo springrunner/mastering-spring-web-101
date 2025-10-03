@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^5.3.4"
+    "vite": "^7.0.0"
   },
   "dependencies": {
     "todomvc-app-css": "^2.4.3",

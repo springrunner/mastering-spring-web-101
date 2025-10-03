@@ -3,7 +3,6 @@ import { resolve } from 'path'
 
 export default defineConfig({
   build: {
-    target: 'modules',
     minify: false,
     rollupOptions: {
       input: {
