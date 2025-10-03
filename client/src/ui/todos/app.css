@@ -61,12 +61,17 @@
 }
 
 .login-guide {
+  display: none;
   text-align: center;
   font-size: 1.1em;
 }
 
 .login-guide a {
   color: rgba(175, 47, 47, 0.58);
+}
+
+.user-profile {
+  display: none;
 }
 
 .user-profile p {
