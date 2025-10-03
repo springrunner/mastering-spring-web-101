@@ -3,8 +3,9 @@ package todoapp.web;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import todoapp.core.user.domain.ProfilePictureStorage;
 import todoapp.security.UserSessionHolder;
 import todoapp.web.model.FeatureTogglesProperties;
 import todoapp.web.model.SiteProperties;
@@ -23,14 +24,17 @@ class FeatureTogglesRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private FeatureTogglesProperties featureTogglesProperties;
 
-    @MockBean
+    @MockitoBean
     private SiteProperties siteProperties;
 
-    @MockBean
+    @MockitoBean
     private UserSessionHolder userSessionHolder;
+
+    @MockitoBean
+    private ProfilePictureStorage profilePictureStorage;
 
     @Test
     void featureToggles() throws Exception {
