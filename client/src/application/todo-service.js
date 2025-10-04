@@ -37,7 +37,7 @@ const WebAPITodosService = (apiUrl = "/api/todos") => {
         data = await response.json();
       } catch (parseError) {
         console.warn('Failed to parse JSON response:', parseError);
-      }  
+      }
 
       const error = new Error(data.message ?? "Failed to process in server");
       error.name = data.error ?? "Unknown Error";
@@ -47,7 +47,7 @@ const WebAPITodosService = (apiUrl = "/api/todos") => {
     }
   }
 
-  return {
+  const service = {
     all: async () => {
       const response = await fetch(apiUrl);
       return await handleResponse(response);
@@ -76,11 +76,13 @@ const WebAPITodosService = (apiUrl = "/api/todos") => {
       return await handleResponse(response);
     },
     clearCompleted: async () => {
-      const todos = await this.all();
+      const todos = await service.all();
       const completedTodos = todos.filter(todo => todo.completed);
-      await Promise.all(completedTodos.map(todo => this.remove(todo.id)));
+      await Promise.all(completedTodos.map(todo => service.remove(todo.id)));
     }
   };
+
+  return service;
 };
 
 export { LocalStorageTodosService, WebAPITodosService };
