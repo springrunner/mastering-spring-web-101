@@ -1,3 +1,6 @@
 ### Project ###
 docs/
 .docker/
+
+### Claude Code ###
+.claude/settings.local.json
