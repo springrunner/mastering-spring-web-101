@@ -44,8 +44,10 @@ Docker:
 
 Follow Conventional Commits format with scope:
 - Format: `<type>(<scope>): <description>`
-- Types: feat, fix, docs, refactor, test, chore, style, perf
-- Scope: server, client (omit for project-wide changes)
+  - Types: feat, fix, docs, refactor, test, chore, style, perf
+  - Scope: server, client (omit for project-wide changes)
+- Language: Always write commit messages in English
+- AI attribution: Do not include AI contribution information in commit messages
 - Examples:
   - `feat(server): Implement request mapping for login endpoint`
   - `feat(client): Implement user profile for Web API`
