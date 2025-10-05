@@ -1,8 +1,8 @@
-# 코드로 익히는 스프링 웹 프로그래밍(부제: Mastering Spring Web 101 Workshop)
+# 스프링 웹 마스터하기(부제: Mastering Spring Web 101 Workshop)
 
-> 이 프로젝트는 코드로 익히는 스프링 웹 프로그래밍 강좌를 위해 만들어진 Todoapp 웹 애플리케이션입니다.
+> 이 프로젝트는 스프링 웹 마스터하기 강좌를 위해 만들어진 Todoapp 웹 애플리케이션입니다.
 
-코드로 익히는 스프링 웹 프로그래밍은 [Spring MVC](https://docs.spring.io/spring-framework/docs/current/reference/html/web.html)와 [Spring Boot](https://spring.io/projects/spring-boot)로 웹 애플리케이션 서버 사이드(Server-side)를 직접 개발·실습하며 학습하는 워크숍 형식의 강좌입니다. 참가자는 제공된 애플리케이션 정의서, Web API 명세서, 그리고 템플릿 프로젝트를 바탕으로 Todoapp 웹 애플리케이션의 서버 사이드를 구축하게 됩니다. 강사가 라이브 코딩과 함께 스프링의 기능을 설명하면, 참가자는 해당 코드를 직접 작성하고 실행·테스트하며 완전한 웹 애플리케이션을 완성하게 됩니다.
+스프링 웹 마스터하기는 [Spring MVC](https://docs.spring.io/spring-framework/docs/current/reference/html/web.html)와 [Spring Boot](https://spring.io/projects/spring-boot)로 웹 애플리케이션 서버 사이드(Server-side)를 직접 개발 및 실습하며 학습하는 워크숍 형식의 강좌입니다. 참가자는 제공된 애플리케이션 정의서, Web API 명세서, 그리고 템플릿 프로젝트를 바탕으로 Todoapp 웹 애플리케이션의 서버 사이드를 구축하게 됩니다. 강사가 라이브 코딩과 함께 스프링의 기능을 설명하면, 참가자는 해당 코드를 직접 작성하고 실행·테스트하며 완전한 웹 애플리케이션을 완성하게 됩니다.
 
 강좌에 대한 자세한 소개는 [여기](https://edu.nextstep.camp/c/ygVWPEgo)에서 볼 수 있습니다.
 
