@@ -22,8 +22,8 @@ Repository: https://github.com/springrunner/mastering-spring-web-101
 ## Project structure
 
 - client: Vanilla JS frontend with Thymeleaf templates
+- contract: OpenAPI 3.x specifications for client-server API contracts
 - server: Spring Boot application
-- docs: Application specifications and textbook
 
 ## Build & Run Commands
 
@@ -63,7 +63,7 @@ Follow Conventional Commits format with scope:
 
 - Language: Java 21
 - Framework: Spring Boot 3.x, Spring MVC, Spring Data JPA
-- Build tools: Gradle 8.x
+- Build tools: Gradle 9.x
 - Database: H2 Database
 - Template engine: Thymeleaf
 
@@ -163,13 +163,13 @@ Formatting & Style:
 ### Technology stacks
 
 - Language: JavaScript (ES modules)
-- Build tool: Vite 5.x
+- Build tool: Vite 7.x
 - Template engine: Thymeleaf (server-side rendering)
 - CSS: TodoMVC App CSS
 
 ### Project structure
 
-- client/pages: HTML templates (todos.html, login.html, error.html)
+- client/pages: HTML templates
 - client/src/application: Business logic and state management
 - client/src/ui: UI components and event handlers
 - client/public: Static assets
